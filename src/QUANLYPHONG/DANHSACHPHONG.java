@@ -134,7 +134,6 @@ private ArrayList<PHONG> list;
                     p = new PHONGTHUONG();
                     p.Nhap();
                     maPhong = p.getMaPhong();
-                    // Kiểm tra mã phòng có tồn tại không
                     if (isMaPhongExists(maPhong)) {
                         System.out.println("Mã phòng đã tồn tại! Vui lòng nhập mã phòng khác.");
                     } else {
@@ -148,7 +147,7 @@ private ArrayList<PHONG> list;
             }
             System.out.println("Bạn có muốn tiếp tục không? (1: Tiếp tục, khác 1: Dừng): ");
             i = sc.nextInt();
-            sc.nextLine(); // Đọc và bỏ qua newline
+            sc.nextLine();
         } while (i == 1);
     }
 

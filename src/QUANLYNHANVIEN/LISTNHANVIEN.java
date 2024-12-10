@@ -4,11 +4,12 @@ import QUANLYPHONG.PHONG;
 import QUANLYPHONG.PHONGTHUONG;
 import QUANLYPHONG.PHONGVIP;
 
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class LISTNHANVIEN {
+public class LISTNHANVIEN implements IFILE {
     private HashMap<String, NHANVIEN> danhSach;
     private Scanner sc;
 
@@ -214,5 +215,72 @@ public class LISTNHANVIEN {
             System.out.println("Tổng tiền nhân viên quản lý: " + tongLuongQL + " VNĐ");
             System.out.println("Tổng tiền nhân viên vệ sinh: " + tongLuongVS + " VNĐ");
         }
+
+
+    public void ghiFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("nhanvien.txt"))) {
+            for (NHANVIEN nv : danhSach.values()) {
+                writer.write(nv.toString());
+                writer.newLine();
+            }
+            System.out.println("Đã ghi danh sách nhân viên vào tệp 'nhanvien.txt'");
+        } catch (IOException e) {
+            System.out.println("Lỗi khi ghi tệp: " + e.getMessage());
+        }
+    }
+
+    public void docFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("nhanvien.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] attributes = line.split(","); // Lấy các thuộc tính từ dòng
+
+                // Giả sử bạn có một hàm khởi tạo cho từng loại nhân viên
+                NHANVIEN nv = null;
+                String maNhanVien = attributes[0].trim();
+                String hoTen = attributes[1].trim();
+                String ngaySinhStr = attributes[2].trim();
+                String CCCD = attributes[3].trim();
+                String gioiTinh = attributes[4].trim();
+                String email = attributes[5].trim();
+                String chucVu = attributes[6].trim();
+                String trinhDo = attributes[7].trim();
+                String kinhNghiemStr = attributes[8].trim();
+                String mucLuongStr = attributes[9].trim();
+                String phuCapStr = attributes[10].trim();
+
+                // Tạo cây nhân viên dựa trên mã (phân loại chúng theo kiểu
+                // Đây chỉ là một ví dụ, bạn cần phát triển thêm logic để xác định nhân viên
+                if (chucVu.equals("Bảo Vệ")) {
+                    nv = new NHANVIENBAOVE();
+                } else if (chucVu.equals("Lễ Tân")) {
+                    nv = new NHANVIENLETAN();
+                } else if (chucVu.equals("Quản Lý")) {
+                    nv = new NHANVIENQUANLY();
+                } else if (chucVu.equals("Vệ Sinh")) {
+                    nv = new NHANVIENVESINH();
+                }
+
+                if (nv != null) {
+                    nv.setMaNhanVien(maNhanVien);
+                    nv.setHoTen(hoTen);
+                    nv.setNgaySinh(new SimpleDateFormat("dd/MM/yyyy").parse(ngaySinhStr));
+                    nv.setCCCD(CCCD);
+                    nv.setGioiTinh(gioiTinh);
+                    nv.setEmail(email);
+                    nv.setChucVu(chucVu);
+                    nv.setTrinhDo(trinhDo);
+                    nv.setKinhNghiem(Integer.parseInt(kinhNghiemStr));
+                    nv.setMucLuong(Double.parseDouble(mucLuongStr));
+                    nv.setPhuCap(Double.parseDouble(phuCapStr));
+                    // Thêm nhân viên vào danh sách
+                    themNhanVienVaoDanhSach(nv);
+                }
+            }
+            System.out.println("Đã đọc danh sách nhân viên từ tệp 'nhanvien.txt'");
+        } catch (IOException | ParseException e) {
+            System.out.println("Lỗi khi đọc tệp: " + e.getMessage());
+        }
+    }
 
 }
