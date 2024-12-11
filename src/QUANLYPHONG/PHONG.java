@@ -13,21 +13,24 @@ public abstract class PHONG implements tinhGiaPhong {
     protected String maPhong;
     protected String tenPhong;
     protected double giaPhong;
-    protected boolean tinhTrangPhong;
+    protected String tinhTrangPhong;
     protected LocalDateTime ngayNhanPhong;
+    protected LocalDateTime ngayTraPhongDuKien;
     protected double dienTichPhong;
+    public int phiPhuThu = 100;
 
 
     public PHONG() {
     }
 
-    public PHONG(String maPhong, String tenPhong, double giaPhong, boolean tinhTrangPhong, LocalDateTime ngayNhanPhong, double dienTichPhong) {
+    public PHONG(String maPhong, String tenPhong, double giaPhong, String tinhTrangPhong, LocalDateTime ngayNhanPhong,LocalDateTime ngayTraPhongDuKien, double dienTichPhong) {
         this.maPhong = maPhong;
         this.tenPhong = tenPhong;
         this.giaPhong = giaPhong;
         this.tinhTrangPhong = tinhTrangPhong;
         this.ngayNhanPhong = ngayNhanPhong;
         this.dienTichPhong = dienTichPhong;
+        this.ngayTraPhongDuKien = ngayTraPhongDuKien;
     }
 
     public String getMaPhong() {
@@ -54,11 +57,11 @@ public abstract class PHONG implements tinhGiaPhong {
         this.giaPhong = giaPhong;
     }
 
-    public boolean isTinhTrangPhong() {
+    public String isTinhTrangPhong() {
         return tinhTrangPhong;
     }
 
-    public void setTinhTrangPhong(boolean tinhTrangPhong) {
+    public void setTinhTrangPhong(String tinhTrangPhong) {
         this.tinhTrangPhong = tinhTrangPhong;
     }
 
@@ -76,6 +79,14 @@ public abstract class PHONG implements tinhGiaPhong {
 
     public void setDienTichPhong(double dienTichPhong) {
         this.dienTichPhong = dienTichPhong;
+    }
+
+    public LocalDateTime getNgayTraPhongDuKien() {
+        return ngayTraPhongDuKien;
+    }
+
+    public void setNgayTraPhongDuKien(LocalDateTime ngayTraPhongDuKien) {
+        this.ngayTraPhongDuKien = ngayTraPhongDuKien;
     }
 
     public void Nhap() {
@@ -101,8 +112,29 @@ public abstract class PHONG implements tinhGiaPhong {
             }
         }
 
-        System.out.print("Nhập tình trạng phòng (true/false): ");
-        tinhTrangPhong = scanner.nextBoolean();
+        String[] validStatuses = {"Trống", "Đang dọn dẹp", "Đang sửa chữa", "Đang thuê"};
+        boolean isValidStatus = false;
+
+        while (true) {
+            System.out.print("Nhập tình trạng phòng (Trống/Đang dọn dẹp/Đang sửa chữa/Đang thuê): ");
+            tinhTrangPhong = scanner.nextLine();
+
+            // Kiểm tra xem tình trạng phòng có hợp lệ hay không
+            for (String status : validStatuses) {
+                if (tinhTrangPhong.equalsIgnoreCase(status)) {
+                    isValidStatus = true;
+                    break; // Ngắt vòng lặp khi tìm thấy tình trạng hợp lệ
+                }
+            }
+
+            if (!isValidStatus) {
+                System.out.println("Tình trạng phòng không hợp lệ. Vui lòng nhập lại.");
+            } else {
+                break; // Thoát khỏi vòng lặp nếu trạng thái hợp lệ
+            }
+
+            isValidStatus = false; // Đặt lại trạng thái kiểm tra cho lần nhập tiếp theo
+        }
         LocalDateTime ngayNhanPhong;
         scanner.nextLine();
         while (true) {
@@ -119,35 +151,58 @@ public abstract class PHONG implements tinhGiaPhong {
             }
         }
 
+        // Nhập ngày trả phòng dự kiến
+        while (true) {
+            System.out.print("Nhập ngày trả phòng dự kiến (yyyy-MM-dd HH:mm): ");
+            String input = scanner.nextLine();
+
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                ngayTraPhongDuKien = LocalDateTime.parse(input, formatter);
+                break; // Thoát khỏi vòng lặp nếu nhập thành công
+            } catch (Exception e) {
+                System.out.println("Định dạng không hợp lệ. Vui lòng nhập lại.");
+            }
+        }
+
         while (true) {
             try {
-                System.out.print("Nhập diện tích phòng: ");
+                System.out.print("Nhập diện tích phòng (25 m² - 40 m² - 60 m²): ");
                 dienTichPhong = scanner.nextDouble();
-                if (dienTichPhong < 0) {
-                    System.out.println("Diện tích không được âm. Vui lòng nhập lại.");
+
+
+                if (dienTichPhong < 0 || (dienTichPhong != 25 && dienTichPhong != 40 && dienTichPhong != 60)) {
+                    System.out.println("Diện tích không hợp lệ. Vui lòng nhập lại.");
                     continue;
                 }
                 break;
             } catch (InputMismatchException e) {
                 System.out.println("Diện tích phải là số. Vui lòng nhập lại.");
-                scanner.next(); // Xóa giá trị không hợp lệ
+                scanner.next();
             }
         }
     }
-
-
     public void Xuat() {
         System.out.println("Thông tin phòng:");
         System.out.println("Mã phòng: " + maPhong);
         System.out.println("Tên phòng: " + tenPhong);
         System.out.println("Giá phòng: " + giaPhong);
-        System.out.println("Tình trạng phòng: " + (tinhTrangPhong ? "Có sẵn" : "Không có sẵn"));
+        System.out.println("Tình trạng phòng: " + tinhTrangPhong );
         System.out.println("Ngày nhận phòng: " + ngayNhanPhong.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        System.out.println("Ngày trả phòng dự kiến: " + ngayTraPhongDuKien.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))); // Xuất ngày trả phòng dự kiến
         System.out.println("Diện tích phòng: " + dienTichPhong + " m²");
     }
 
+    public void Xuat2() {
+        System.out.println("Thông tin phòng: " +
+                "Mã phòng: " + maPhong + ", " +
+                "Tên phòng: " + tenPhong + ", " +
+                "Giá phòng: " + giaPhong + ", " +
+                "Tình trạng phòng: " + tinhTrangPhong + ", " +
+                "Diện tích phòng: " + dienTichPhong + " m²");
+    }
     public abstract double tinhGiaPhong();
-
+    public abstract double tinhGiaPhong2(LocalDateTime ngayTraPhong);
     public void dieuChinhGiaPhong() {
         Scanner sc = new Scanner(System.in);
         int luaChon;
@@ -196,8 +251,7 @@ public abstract class PHONG implements tinhGiaPhong {
     }
 
     public long laySoNgayO() {
-        LocalDateTime ngayHienTai = LocalDateTime.now(); // Lấy ngày hiện tại
-        return ChronoUnit.DAYS.between(ngayNhanPhong.toLocalDate(), ngayHienTai.toLocalDate());
+        return ChronoUnit.DAYS.between(ngayNhanPhong.toLocalDate(), ngayTraPhongDuKien.toLocalDate());
     }
 
 }

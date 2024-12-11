@@ -6,15 +6,10 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MainMenu {
-    private LISTNHANVIEN listNhanVien;
-    private Scanner sc;
-
-    public MainMenu() {
-        listNhanVien = new LISTNHANVIEN();
-        sc = new Scanner(System.in);
-    }
 
     public void displayMenu() {
+         LISTNHANVIEN listNhanVien = new LISTNHANVIEN();
+         Scanner sc = new Scanner(System.in);
         int choice = 0;
         do {
             System.out.println("------QUẢN LÝ NHÂN VIÊN-------");
@@ -72,8 +67,5 @@ public class MainMenu {
         } while (choice != 8);
     }
 
-    public static void main(String[] args) throws ParseException {
-        MainMenu menu = new MainMenu();
-        menu.displayMenu();
-    }
+
 }

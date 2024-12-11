@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class main {
 
-    public  void QuanLyPhong() {
+    public  void QuanLyPhong() throws IOException {
 
             DANHSACHPHONG danhSachPhong = new DANHSACHPHONG();
             Scanner scanner = new Scanner(System.in);

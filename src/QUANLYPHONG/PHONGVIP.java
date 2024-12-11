@@ -1,6 +1,7 @@
 package QUANLYPHONG;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
 public class PHONGVIP extends PHONG {
@@ -40,14 +41,16 @@ public class PHONGVIP extends PHONG {
         return giaTienIch;
     }
 
+
+
     public void setGiaTienIch(int giaTienIch) {
         this.giaTienIch = giaTienIch;
     }
 
-    public PHONGVIP(String maPhong, String tenPhong, double giaPhong, boolean tinhTrangPhong,
-                    LocalDateTime ngayNhanPhong, double dienTichPhong, String[] tienich,
+    public PHONGVIP(String maPhong, String tenPhong, double giaPhong, String tinhTrangPhong,
+                    LocalDateTime ngayNhanPhong,LocalDateTime ngayDuKienTraPhong, double dienTichPhong, String[] tienich,
                     double phanTramGiamGia, int thoiGianSuDungTienIch) {
-        super(maPhong, tenPhong, giaPhong, tinhTrangPhong, ngayNhanPhong, dienTichPhong);
+        super(maPhong, tenPhong, giaPhong, tinhTrangPhong, ngayNhanPhong,ngayDuKienTraPhong, dienTichPhong);
         this.tienich = tienich;
         this.phanTramGiamGia = phanTramGiamGia;
         this.thoiGianSuDungTienIch = thoiGianSuDungTienIch;
@@ -95,8 +98,44 @@ public class PHONGVIP extends PHONG {
         }
         System.out.println("Thời gian sử dụng tiện ích: " + thoiGianSuDungTienIch + " ngày");
     }
+    @Override
+    public void Xuat2() {
+        // Gọi phương thức Xuat() của lớp cha
+        super.Xuat();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Phần trăm giảm giá: ").append(phanTramGiamGia).append("%, ");
+
+        // Xử lý tiện ích
+        sb.append("Tiện ích: ");
+        if (tienich != null && tienich.length > 0) {
+            for (int i = 0; i < tienich.length; i++) {
+                if (tienich[i] != null) {
+                    sb.append(tienich[i]);
+                    if (i < tienich.length - 1) {
+                        sb.append(", "); // Thêm dấu phẩy nếu không phải là tiện ích cuối cùng
+                    }
+                }
+            }
+        } else {
+            sb.append("Không có tiện ích.");
+        }
+
+        // Thời gian sử dụng tiện ích
+        sb.append(", Thời gian sử dụng tiện ích: ").append(thoiGianSuDungTienIch).append(" ngày");
+
+        // In toàn bộ thông tin ra màn hình
+        System.out.println(sb.toString());
+    }
 
     public  double tinhGiaPhong() {
         return giaPhong*laySoNgayO()*(1-phanTramGiamGia/100) + tienich.length*giaTienIch*thoiGianSuDungTienIch;
+    }
+
+    @Override
+    public double tinhGiaPhong2(LocalDateTime ngayTraPhong) {
+        long soNgayO = ChronoUnit.DAYS.between(ngayNhanPhong.toLocalDate(), ngayTraPhong.toLocalDate());
+        return giaPhong*soNgayO*(1-phanTramGiamGia/100) + tienich.length*giaTienIch*thoiGianSuDungTienIch;
+
     }
 }

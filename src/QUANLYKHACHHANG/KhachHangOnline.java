@@ -19,7 +19,7 @@ public class KhachHangOnline extends KhachHang {
 
     @Override
     public void Xuat() {
-        super.Xuat(); // Gọi phương thức Xuat() của lớp cha  
+        super.Xuat();
         System.out.println("Phương thức thanh toán: " + phuongThucThanhToan); // Hiển thị phương thức thanh toán  
         System.out.println("Trạng thái thanh toán: " + trangThaiThanhToan); // Hiển thị trạng thái thanh toán  
         System.out.println("Mã giảm giá: " + maGiamGia); // Hiển thị mã giảm giá  
