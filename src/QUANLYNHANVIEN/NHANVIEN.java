@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-public class NHANVIEN {
+public class NHANVIEN  {
     protected String maNhanVien, hoTen;
     protected Date ngaySinh;
     protected String CCCD, gioiTinh, email, chucVu;
