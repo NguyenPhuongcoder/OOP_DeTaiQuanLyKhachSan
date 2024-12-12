@@ -185,7 +185,7 @@ public class LISTTKKH {
                     }
                     break;
                 case 0:
-                    System.out.println("Thoát chương trình.");
+                    System.out.println("Thoát khỏi quản lý tài khoản!");
                     break;
                 default:
                     System.out.println("Chọn không hợp lệ. Vui lòng chọn lại!");
@@ -208,6 +208,7 @@ public class LISTTKKH {
     }
     // Hàm quên mật khẩu
     public void quenMatKhau() {
+        KIEMTRA kt = new KIEMTRA();
         System.out.print("Nhập mã tài khoản để lấy lại mật khẩu: ");
         String maTK = scanner.nextLine();
         TKKH tk = timTaiKhoan(maTK);
@@ -233,13 +234,23 @@ public class LISTTKKH {
 
             if (isAuthenticated) {
                 String matKhauCu = tk.getMaTkhau(); // Lấy mật khẩu cũ
-                String matKhauMoi;
+                String matKhauMoi = "";
                 boolean validNewPassword = false; // Biến xác nhận mật khẩu mới hợp lệ
 
                 while (!validNewPassword) {
-                    System.out.print("Nhập mật khẩu mới: ");
-                    matKhauMoi = scanner.nextLine();
-
+                    for (int i = 0; i < 3; i++) {
+                        System.out.print("Nhập mật khẩu: ");
+                        matKhauMoi = scanner.nextLine();
+                        if (kt.kiemTraDoManhMatKhau(matKhauMoi)) {
+                            break;
+                        } else {
+                            System.out.println("Mật khẩu không hợp lệ! (Cần ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt)");
+                        }
+                        if (i == 2) {
+                            System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi chức năng.");
+                            return;
+                        }
+                    }
                     if (matKhauMoi.equals(matKhauCu)) {
                         System.out.println("Mật khẩu mới không được trùng với mật khẩu cũ. Vui lòng nhập lại.");
                     } else {

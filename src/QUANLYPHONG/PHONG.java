@@ -34,7 +34,7 @@ public abstract class PHONG implements tinhGiaPhong {
     }
 
     public String getMaPhong() {
-        return maPhong;
+        return this.maPhong;
     }
 
     public void setMaPhong(String maPhong) {
@@ -108,13 +108,11 @@ public abstract class PHONG implements tinhGiaPhong {
                 break;
             } catch (InputMismatchException e) {
                 System.out.println("Giá phòng phải là số. Vui lòng nhập lại.");
-                scanner.next(); // Xóa giá trị không hợp lệ
             }
         }
-
         String[] validStatuses = {"Trống", "Đang dọn dẹp", "Đang sửa chữa", "Đang thuê"};
         boolean isValidStatus = false;
-
+        scanner.nextLine();
         while (true) {
             System.out.print("Nhập tình trạng phòng (Trống/Đang dọn dẹp/Đang sửa chữa/Đang thuê): ");
             tinhTrangPhong = scanner.nextLine();
@@ -135,36 +133,8 @@ public abstract class PHONG implements tinhGiaPhong {
 
             isValidStatus = false; // Đặt lại trạng thái kiểm tra cho lần nhập tiếp theo
         }
-        LocalDateTime ngayNhanPhong;
-        scanner.nextLine();
-        while (true) {
-            System.out.print("Nhập ngày nhận phòng (yyyy-MM-dd HH:mm): ");
-            String input = scanner.nextLine();
-
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                ngayNhanPhong = LocalDateTime.parse(input, formatter);
-                this.ngayNhanPhong = ngayNhanPhong; // Lưu ngày nhận phòng vào thuộc tính
-                break; // Thoát khỏi vòng lặp nếu nhập thành công
-            } catch (Exception e) {
-                System.out.println("Định dạng không hợp lệ. Vui lòng nhập lại.");
-            }
-        }
-
-        // Nhập ngày trả phòng dự kiến
-        while (true) {
-            System.out.print("Nhập ngày trả phòng dự kiến (yyyy-MM-dd HH:mm): ");
-            String input = scanner.nextLine();
-
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                ngayTraPhongDuKien = LocalDateTime.parse(input, formatter);
-                break; // Thoát khỏi vòng lặp nếu nhập thành công
-            } catch (Exception e) {
-                System.out.println("Định dạng không hợp lệ. Vui lòng nhập lại.");
-            }
-        }
-
+        this.ngayNhanPhong = null;
+        this.ngayTraPhongDuKien = null;
         while (true) {
             try {
                 System.out.print("Nhập diện tích phòng (25 m² - 40 m² - 60 m²): ");
@@ -188,18 +158,27 @@ public abstract class PHONG implements tinhGiaPhong {
         System.out.println("Tên phòng: " + tenPhong);
         System.out.println("Giá phòng: " + giaPhong);
         System.out.println("Tình trạng phòng: " + tinhTrangPhong );
-        System.out.println("Ngày nhận phòng: " + ngayNhanPhong.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        System.out.println("Ngày trả phòng dự kiến: " + ngayTraPhongDuKien.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))); // Xuất ngày trả phòng dự kiến
+        if (ngayNhanPhong != null) {
+            System.out.println("Ngày nhận phòng: " + ngayNhanPhong.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        } else {
+            System.out.println("Ngày nhận phòng: không có");
+        }
+
+        if (ngayTraPhongDuKien != null) {
+            System.out.println("Ngày trả phòng dự kiến: " + ngayTraPhongDuKien.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        } else {
+            System.out.println("Ngày trả phòng dự kiến: không có");
+        }
         System.out.println("Diện tích phòng: " + dienTichPhong + " m²");
     }
 
     public void Xuat2() {
-        System.out.println("Thông tin phòng: " +
+        System.out.print("Thông tin phòng: " +
                 "Mã phòng: " + maPhong + ", " +
                 "Tên phòng: " + tenPhong + ", " +
                 "Giá phòng: " + giaPhong + ", " +
                 "Tình trạng phòng: " + tinhTrangPhong + ", " +
-                "Diện tích phòng: " + dienTichPhong + " m²");
+                "Diện tích phòng: " + dienTichPhong + " m²"+",");
     }
     public abstract double tinhGiaPhong();
     public abstract double tinhGiaPhong2(LocalDateTime ngayTraPhong);

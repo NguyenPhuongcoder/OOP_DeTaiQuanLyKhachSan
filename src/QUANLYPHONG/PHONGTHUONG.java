@@ -30,6 +30,7 @@ public class PHONGTHUONG extends PHONG {
         PhanTramGiamGia = phanTramGiamGia;
     }
 
+
     @Override
     public void Nhap() {
         super.Nhap(); // Nhập thông tin từ lớp cha
@@ -53,7 +54,7 @@ public class PHONGTHUONG extends PHONG {
         // Gọi phương thức Xuat() của lớp cha để xuất thông tin chung
         StringBuilder sb = new StringBuilder();
         // Xuất thông tin từ lớp cha
-        super.Xuat();
+        super.Xuat2();
 
         // Thêm thông tin giảm giá vào StringBuilder
         sb.append("Phần trăm giảm giá: ").append(this.PhanTramGiamGia).append("%, ");

@@ -101,7 +101,7 @@ public class PHONGVIP extends PHONG {
     @Override
     public void Xuat2() {
         // Gọi phương thức Xuat() của lớp cha
-        super.Xuat();
+        super.Xuat2();
 
         StringBuilder sb = new StringBuilder();
         sb.append("Phần trăm giảm giá: ").append(phanTramGiamGia).append("%, ");

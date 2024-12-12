@@ -8,6 +8,7 @@ import QUANLYPHONG.DANHSACHPHONG;
 import QUANLYPHONG.PHONG;
 import QUANLYPHONG.PHONGTHUONG;
 import QUANLYPHONG.PHONGVIP;
+import QUANLYTAIKHOANKH.KIEMTRA;
 import QUANLYTAIKHOANKH.LISTTKKH;
 import QUANLYTAIKHOANKH.TKKH;
 
@@ -40,7 +41,7 @@ public  class THAOTAC {
 
         do {
             // Hiển thị menu
-            System.out.println("===== MENU =====");
+            System.out.println("===== PHẦN MỀM KHÁCH SẠN =====");
             System.out.println("1. Đăng nhập với tư cách QUẢN LÝ");
             System.out.println("2. Đăng nhập với tư cách NGƯỜI SỬ DỤNG");
             System.out.println("3. Thoát chương trình");
@@ -117,7 +118,7 @@ public  class THAOTAC {
         TKKH tk = menu.kiemTraDangNhap(username, password);
         if (tk != null) {
             System.out.println("Đăng nhập thành công!");
-            menuKhachHang(tk); // Gọi menu cho khách hàng
+            menuKhachHang(tk);
         } else {
             System.out.println("Tên đăng nhập hoặc mật khẩu không đúng.");
         }
@@ -125,7 +126,6 @@ public  class THAOTAC {
 
     public static void menuKhachHang(TKKH tk) {
         Scanner scanner = new Scanner(System.in);
-        tk = new TKKH();
         int luaChonKH;
         do {
             System.out.println("\n--- MENU KHÁCH HÀNG ---");
@@ -135,7 +135,10 @@ public  class THAOTAC {
             System.out.println("4. Xem thông tin đặt phòng");
             System.out.println("5. Thanh toán tiền phòng");
             System.out.println("6. Nạp tiền vào tài khoản");
-            System.out.println("7. Đánh giá khách hàng");
+            System.out.println("7. Đánh giá khách sạn");
+            System.out.println("8. Xem thông tin tài khoản");
+            System.out.println("9. Chỉnh sửa thông tin tài khoản");
+            System.out.println("10. Đổi mật khẩu");
             System.out.println("0. Đăng xuất");
             System.out.print("Chọn chức năng: ");
             luaChonKH = scanner.nextInt();
@@ -163,6 +166,15 @@ public  class THAOTAC {
                 case 7:
                     danhGiaKhachHang();
                     break;
+                case 8:
+                    xemThongTin(tk);
+                    break;
+                case 9:
+                    chinhSuaThongTin(tk);
+                    break;
+                case 10:
+                    DoiMatKhau(tk);
+                    break;
                 case 0:
                     System.out.println("Đăng xuất thành công.");
                     break;
@@ -172,9 +184,200 @@ public  class THAOTAC {
         } while (luaChonKH != 0);
     }
 
+    public static void DoiMatKhau(TKKH tk) {
+        KIEMTRA kt = new KIEMTRA();
+        System.out.println("-- ĐỔI MẬT KHẨU --");
+        Scanner sc = new Scanner(System.in);
+        final int MAX_ATTEMPTS = 3; // Số lần thử tối đa
+        int attempts = 0; // Biến đếm số lần thử
+
+        while (attempts < MAX_ATTEMPTS) {
+            // Nhập mật khẩu cũ
+            System.out.print("Nhập mật khẩu cũ: ");
+            String matKhauCu = sc.nextLine();
+
+            // Kiểm tra mật khẩu cũ
+            if (matKhauCu.equals(tk.getMaTkhau())) { // Nếu mật khẩu cũ đúng
+                String matKhauMoi = "";
+                String matKhauXacNhan;
+                while (true) {
+                    for (int i = 0; i < 3; i++) {
+                        System.out.print("Nhập mật khẩu mới: ");
+                        matKhauMoi = sc.nextLine();
+                        if (kt.kiemTraDoManhMatKhau(matKhauMoi)&&!tk.getMaTkhau().equals(matKhauMoi)) {
+                            break;
+                        } else {
+                            System.out.println("Mật khẩu không hợp lệ! (Cần ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt)");
+                            System.out.println("Mật khẩu mới không trùng với mật khẩu cũ");
+                        }
+                        if (i == 2) {
+                            System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi chức năng.");
+                            return;
+                        }
+                    }
+                    System.out.print("Xác nhận mật khẩu mới: ");
+                    matKhauXacNhan = sc.nextLine();
+
+                    // So sánh mật khẩu mới với mật khẩu xác nhận
+                    if (matKhauMoi.equals(matKhauXacNhan)) {
+                        // Cập nhật mật khẩu cho tài khoản
+                        tk.setMaTkhau(matKhauMoi); // Giả sử có phương thức `setMatKhau()`
+                        System.out.println("Đổi mật khẩu thành công!");
+                        return; // Thoát sau khi đổi mật khẩu
+                    } else {
+                        System.out.println("Mật khẩu xác nhận không khớp. Vui lòng nhập lại.");
+                    }
+                }
+            } else {
+                attempts++; // Tăng số lần thử
+                System.out.println("Mật khẩu cũ không đúng. Bạn còn " + (MAX_ATTEMPTS - attempts) + " lần thử.");
+            }
+        }
+        System.out.println("Bạn đã nhập sai quá 3 lần.");
+        System.out.println("Bạn muốn:");
+        System.out.println("1. Quên mật khẩu");
+        System.out.println("2. Thoát");
+        System.out.print("Nhập lựa chọn của bạn: ");
+        int luaChon = sc.nextInt();
+        sc.nextLine(); // Đọc dòng tiếp theo sau khi nhập số
+
+        switch (luaChon) {
+            case 1:
+                attempts = 0; // Biến đếm số lần nhập sai
+                boolean isAuthenticated = false; // Biến xác nhận
+
+                while (attempts < 3 && !isAuthenticated) {
+                    System.out.print("Nhập CCCD: ");
+                    String cccd = sc.nextLine();
+                    System.out.print("Nhập số điện thoại: ");
+                    String soDienThoai = sc.nextLine();
+
+                    // Kiểm tra thông tin xác thực
+                    if (tk.getCCCD().equals(cccd) && tk.getSoDienThoai().equals(soDienThoai)) {
+                        isAuthenticated = true; // Nếu thông tin đúng, xác nhận
+                    } else {
+                        attempts++;
+                        System.out.println("Thông tin không hợp lệ. Bạn đã nhập sai " + attempts + " lần.");
+                    }
+                }
+
+                if (isAuthenticated) {
+                    String matKhauMoi = "";
+                    for (int i = 0; i < 3; i++) {
+                        System.out.print("Nhập mật khẩu mới: ");
+                        matKhauMoi = sc.nextLine();
+                        if (kt.kiemTraDoManhMatKhau(matKhauMoi)&&!tk.getMaTkhau().equals(matKhauMoi)) {
+                            break;
+                        } else {
+                            System.out.println("Mật khẩu không hợp lệ! (Cần ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt)");
+                            System.out.println("Mật khẩu mới không trùng với mật khẩu cũ");
+                        }
+                        if (i == 2) {
+                            System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi chức năng.");
+                            return;
+                        }
+                    }
+                    tk.setMaTkhau(matKhauMoi);
+                    System.out.println("Đã đổi mật khẩu thành công!");
+                } else {
+                    System.out.println("Bạn đã nhập sai quá 3 lần. Không thể đổi mật khẩu.");
+                    return;
+                }
+                break;
+            case 2:
+                System.out.println("Thoát...");
+                return;
+            default:
+                System.out.println("Lựa chọn không hợp lệ.");
+        }
+    }
+    private static void xemThongTin(TKKH tk){
+        System.out.println("== THÔNG TIN TÀI KHOẢN ==");
+        System.out.println("|| Mã tài khoản :"+tk.getMaTK());
+        System.out.println("|| Tên đăng nhập:"+tk.getTenDangNhap());
+        System.out.println("|| Số Dư        :"+tk.soDu+"VNĐ");
+        System.out.println("||=====================||");
+    }
+    private static void chinhSuaThongTin(TKKH tk){
+        KIEMTRA kt = new KIEMTRA();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("-- CHỈNH SỬA THÔNG TIN TÀI KHOẢN --");
+        System.out.println("1.Tên đăng nhập");
+        System.out.println("2.Số điện thoại");
+        System.out.println("3.Căn cước công dân");
+        System.out.println("4.Thoát");
+        int choice;
+
+        while (true) {
+            choice = sc.nextInt();
+            if (choice >= 1 && choice <= 3) {
+                break;
+            } else {
+                System.out.println("Vui lòng nhập số từ " + 1 + " đến " + 6);
+            }
+        }
+        sc.nextLine();
+        switch (choice) {
+            case 1:
+                for (int i = 0; i < 3; i++) {
+                    System.out.print("Nhập tên đăng nhập: ");
+                    String tenDNmoi = sc.nextLine();
+                    if (kt.checkTenTK(tenDNmoi)) {
+                        tk.setTenDangNhap(tenDNmoi);
+                        break;
+                    } else {
+                        System.out.println("Tên đăng nhập không hợp lệ! (Không chứa số và ký tự đặc biệt)");
+                    }
+                    if (i == 2) {
+                        System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi hàm.");
+                        break;
+                    }
+                }
+                break;
+            case 2:
+                for (int i = 0; i < 3; i++) {
+                    System.out.print("Nhập số điện thoại: ");
+                    String SoDienThoai = sc.nextLine();
+                    if (kt.checkSdt(SoDienThoai)) {
+                        tk.setSoDienThoai(tk.getSoDienThoai());
+                        break;
+                    } else {
+                        System.out.println("Số điện thoại không hợp lệ! (Cần 10 hoặc 11 chữ số)");
+                    }
+                    if (i == 2) {
+                        System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi hàm.");
+                        break;
+                    }
+                }
+                break;
+            case 3:
+                for (int i = 0; i < 3; i++) {
+                    System.out.print("Nhập số CCCD: ");
+                    String CCCD = sc.nextLine();
+                    if (kt.checkCCCD(CCCD)) {
+                        tk.setCCCD(CCCD);
+                        break;
+                    } else {
+                        System.out.println("Số CCCD không hợp lệ! (Cần 12 chữ số)");
+                    }
+                    if (i == 2) {
+                        System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi hàm.");
+                        break;
+                    }
+                }
+                break;
+            case 4:
+                System.out.println("Thoát!...");
+                return;
+            default:
+                System.out.println("Lựa chọn không hợp lệ.");
+                break;
+        }
+    }
+
     private static void datPhong(TKKH tk) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("--- ĐẶT PHÒNG ---");
+        System.out.println("-- ĐẶT PHÒNG --");
         while (true) {
             System.out.println("Chọn một lựa chọn:");
             System.out.println("1. Tìm kiếm");
@@ -229,11 +432,21 @@ public  class THAOTAC {
                             System.out.println("Diện tích phải là số. Vui lòng nhập lại.");
                             scanner.next(); // Làm sạch bộ đệm đầu vào
                         }
-
-                        // In thông tin phòng đã chọn
-                        danhSachPhong.in(chonLPhong, dienTichPhong);
+                        System.out.println("Nhập khoảng giá mà bạn muốn!");
+                        int tuGia, giaKetThuc;
+                        while (true) {
+                            System.out.println("Nhập giá bắt đầu:");
+                            tuGia = scanner.nextInt();
+                            System.out.println("Nhập giá kết thúc:");
+                            giaKetThuc = scanner.nextInt();
+                            if (tuGia < giaKetThuc && tuGia > 0) {
+                                break;
+                            } else {
+                                System.out.println("Giá bắt đầu phải nhỏ hơn giá kết thúc. Vui lòng nhập lại.");
+                            }
+                        }
+                        danhSachPhong.in(chonLPhong, dienTichPhong,tuGia,giaKetThuc);
                         break;
-
                     case 2:
                         System.out.print("Chọn mã phòng để đặt: ");
                         String maPhong = scanner.nextLine();
@@ -266,6 +479,7 @@ public  class THAOTAC {
                             try {
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                                 ngayDi = LocalDateTime.parse(inputNgayDi, formatter);
+                                p.setNgayTraPhongDuKien(ngayDi);
                                 // Kiểm tra nếu ngày đi không sớm hơn ngày đến
                                 if (ngayDi.isBefore(ngayDen)) {
                                     System.out.println("Ngày đi không thể sớm hơn ngày đến. Vui lòng nhập lại.");
@@ -283,10 +497,7 @@ public  class THAOTAC {
 
                     case 3:
                         System.out.println("Đang thoát...");
-                        scanner.close();
-                        System.exit(0);
-                        break;
-
+                        return;
                     default:
                         System.out.println("Lựa chọn không hợp lệ. Vui lòng nhập lại.");
                         break;
@@ -303,7 +514,7 @@ public  class THAOTAC {
 
         private static void huyPhong(TKKH tk) {
             Scanner scanner = new Scanner(System.in);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             System.out.println("-- HỦY PHÒNG --");
             System.out.print("Nhập mã phòng: ");
             String maPhong = scanner.nextLine();
@@ -316,7 +527,7 @@ public  class THAOTAC {
                 // Nhập ngày hủy
                 while (!validDate) {
                     try {
-                        System.out.print("Nhập ngày hủy (yyyy/MM/dd HH:mm): ");
+                        System.out.print("Nhập ngày hủy (yyyy-MM-dd HH:mm): ");
                         String ngayHuyStr = scanner.nextLine();
 
                         // Chuyển đổi chuỗi ngày hủy thành LocalDateTime
@@ -333,6 +544,8 @@ public  class THAOTAC {
                     System.out.println("Bạn đã hủy phòng.");
                     tk.xoaPhong(maPhong);
                     danhSachPhong.timPhong(maPhong).setTinhTrangPhong("Trống");
+                    danhSachPhong.timPhong(maPhong).setNgayNhanPhong(null);
+                    danhSachPhong.timPhong(maPhong).setNgayTraPhongDuKien(null);
                 } else {
                     System.out.println("Không thể hủy đặt phòng vì ngày hủy đã qua ngày nhận phòng.");
                     System.out.println("Nếu bạn hủy thì bạn sẽ đền bù phí tổn thất đền cho khách sạn là 1.000.000 VNĐ");
@@ -347,6 +560,8 @@ public  class THAOTAC {
                             System.out.println("Số dư hiện tại của bạn là: " + tk.soDu + " VNĐ.");
                             tk.xoaPhong(maPhong);
                             danhSachPhong.timPhong(maPhong).setTinhTrangPhong("Trống");
+                            danhSachPhong.timPhong(maPhong).setNgayNhanPhong(null);
+                            danhSachPhong.timPhong(maPhong).setNgayTraPhongDuKien(null);
                         } else {
                             System.out.println("Số dư không đủ để thanh toán phí tổn thất.");
                         }
@@ -358,7 +573,6 @@ public  class THAOTAC {
                 System.out.println("Không tìm thấy phòng trên!");
             }
         }
-
 
     private static void xemThongTinPhong() {
         Scanner scanner = new Scanner(System.in);
@@ -417,14 +631,24 @@ public  class THAOTAC {
                             scanner.next(); // Làm sạch bộ đệm đầu vào
                         }
 
-                        // In thông tin phòng đã chọn
-                        danhSachPhong.in(chonLPhong, dienTichPhong);
+                        System.out.println("Nhập khoảng giá mà bạn muốn!");
+                        int tuGia, giaKetThuc;
+                        while (true) {
+                            System.out.println("Nhập giá bắt đầu:");
+                            tuGia = scanner.nextInt();
+                            System.out.println("Nhập giá kết thúc:");
+                            giaKetThuc = scanner.nextInt();
+                            if (tuGia < giaKetThuc && tuGia > 0) {
+                                break;
+                            } else {
+                                System.out.println("Giá bắt đầu phải nhỏ hơn giá kết thúc. Vui lòng nhập lại.");
+                            }
+                        }
+                        danhSachPhong.in(chonLPhong, dienTichPhong,tuGia,giaKetThuc);
                         break;
                     case 2:
                         System.out.println("Đang thoát...");
-                        scanner.close();
-                        System.exit(0);
-                        break;
+                        return;
 
                     default:
                         System.out.println("Lựa chọn không hợp lệ. Vui lòng nhập lại.");
@@ -450,14 +674,14 @@ public  class THAOTAC {
         String maPhong = scanner.nextLine();
 
         if (tk.timPhongDaDat(maPhong) != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime ngayThanhToan = null;
             boolean validDate = false;
 
 
             while (!validDate) {
                 try {
-                    System.out.print("Nhập ngày thanh toán (yyyy/MM/dd HH:mm): ");
+                    System.out.print("Nhập ngày thanh toán (yyyy-MM-dd HH:mm): ");
                     String ngayThanhToanStr = scanner.nextLine();
                     ngayThanhToan = LocalDateTime.parse(ngayThanhToanStr, formatter);
                     validDate = true; // Ngày hợp lệ
@@ -473,6 +697,7 @@ public  class THAOTAC {
                 System.out.println("||  Ngày nhận phòng         :"+danhSachPhong.timPhong(maPhong).getNgayNhanPhong().format(formatter));
                 System.out.println("||  Ngày trả phòng          :"+ngayThanhToan.format(formatter));
                 System.out.println("||  Phí phụ thu             :"+"100 VNĐ");
+                System.out.println("||  Giá phòng               :"+danhSachPhong.timPhong(maPhong).getGiaPhong()+"VNĐ");
                 System.out.println("||  Giảm giá                :"+((PHONGTHUONG) danhSachPhong.timPhong(maPhong)).getPhanTramGiamGia()+"%");
                 System.out.println("||  Số ngày sử dụng giảm giá:"+((PHONGTHUONG) danhSachPhong.timPhong(maPhong)).getThoiGianSudungGiamGia()+"Ngày");
                 System.out.println("||  Số tiền phải trả        :"+danhSachPhong.timPhong(maPhong).tinhGiaPhong2(ngayThanhToan)+100+"VNĐ");
@@ -486,7 +711,7 @@ public  class THAOTAC {
                     for (int attempt = 1; attempt <= maxAttempts; attempt++) {
                         System.out.println("Nhập lựa chọn của bạn (1: Thanh toán, 2: Hủy thao tác): ");
                         int choice = scanner.nextInt();
-                        scanner.nextLine(); // Đọc dòng thừa
+                        scanner.nextLine();
 
                         if (choice == 1) {
                             if (tk.soDu < danhSachPhong.timPhong(maPhong).tinhGiaPhong2(ngayThanhToan) + 100) {
@@ -497,6 +722,8 @@ public  class THAOTAC {
                                 System.out.println("Số dư hiện tại của bạn là: " + tk.soDu + " VNĐ");
                                 tk.xoaPhong(maPhong);
                                 danhSachPhong.timPhong(maPhong).setTinhTrangPhong("Đang dọn dẹp");
+                                danhSachPhong.timPhong(maPhong).setNgayNhanPhong(null);
+                                danhSachPhong.timPhong(maPhong).setNgayTraPhongDuKien(null);
                                 validChoice = true; // Đánh dấu rằng thanh toán đã thành công
                                 break; // Thoát vòng lặp nếu thanh toán thành công
                             }
@@ -518,13 +745,14 @@ public  class THAOTAC {
                     if (!validChoice) {
                         System.out.println("Thanh toán không thành công. Vui lòng thử lại!");
                     }
-                }else{
+                    }else{
                     if (danhSachPhong.timPhong(maPhong) instanceof PHONGVIP){
-                        System.out.println("========== HÓA ĐƠN PHÒNG THƯỜNG ==========");
+                        System.out.println("========== HÓA ĐƠN PHÒNG VIP ==========");
                         System.out.println("||  Mã Phòng                :"+danhSachPhong.timPhong(maPhong).getMaPhong() );
                         System.out.println("||  Ngày nhận phòng         :"+danhSachPhong.timPhong(maPhong).getNgayNhanPhong().format(formatter));
                         System.out.println("||  Ngày trả phòng          :"+ngayThanhToan.format(formatter));
                         System.out.println("||  Phí phụ thu             :"+"100 VNĐ");
+                        System.out.println("||  Giá phòng               :"+danhSachPhong.timPhong(maPhong).getGiaPhong()+"VNĐ");
                         System.out.println("||  Giảm giá                :"+((PHONGVIP) danhSachPhong.timPhong(maPhong)).getPhanTramGiamGia()+"%");
                         System.out.println("||  Số tiện ích             :"+((PHONGVIP) danhSachPhong.timPhong(maPhong)).getTienich().length);
                         System.out.println("||  Giá mỗi tiện ích        :100 VNĐ");
@@ -548,6 +776,8 @@ public  class THAOTAC {
                                     System.out.println("Số dư hiện tại của bạn là: " + tk.soDu + " VNĐ");
                                     tk.xoaPhong(maPhong);
                                     danhSachPhong.timPhong(maPhong).setTinhTrangPhong("Đang dọn dẹp");
+                                    danhSachPhong.timPhong(maPhong).setNgayNhanPhong(null);
+                                    danhSachPhong.timPhong(maPhong).setNgayTraPhongDuKien(null);
                                     validChoice = true; // Đánh dấu rằng thanh toán đã thành công
                                     break; // Thoát vòng lặp nếu thanh toán thành công
                                 }
@@ -579,6 +809,7 @@ public  class THAOTAC {
                     System.out.println("||  Ngày trả phòng          :"+ngayThanhToan.format(formatter));
                     System.out.println("||  Giảm giá                :"+((PHONGTHUONG) danhSachPhong.timPhong(maPhong)).getPhanTramGiamGia()+"%");
                     System.out.println("||  Số ngày sử dụng giảm giá:"+((PHONGTHUONG) danhSachPhong.timPhong(maPhong)).getThoiGianSudungGiamGia()+"Ngày");
+                    System.out.println("||  Giá phòng               :"+danhSachPhong.timPhong(maPhong).getGiaPhong()+"VNĐ");
                     System.out.println("||  Số tiền phải trả        :"+danhSachPhong.timPhong(maPhong).tinhGiaPhong2(ngayThanhToan)+"VNĐ");
                     System.out.println("||=====================================||");
                     int maxAttempts = 3;
@@ -598,6 +829,8 @@ public  class THAOTAC {
                                 System.out.println("Số dư hiện tại của bạn là: " + tk.soDu + " VNĐ");
                                 tk.xoaPhong(maPhong);
                                 danhSachPhong.timPhong(maPhong).setTinhTrangPhong("Đang dọn dẹp");
+                                danhSachPhong.timPhong(maPhong).setNgayNhanPhong(null);
+                                danhSachPhong.timPhong(maPhong).setNgayTraPhongDuKien(null);
                                 validChoice = true; // Đánh dấu rằng thanh toán đã thành công
                                 break; // Thoát vòng lặp nếu thanh toán thành công
                             }
@@ -621,12 +854,13 @@ public  class THAOTAC {
                     }
                 }else{
                     if (danhSachPhong.timPhong(maPhong) instanceof PHONGVIP){
-                        System.out.println("========== HÓA ĐƠN PHÒNG THƯỜNG ==========");
+                        System.out.println("========== HÓA ĐƠN PHÒNG VIP ==========");
                         System.out.println("||  Mã Phòng                :"+danhSachPhong.timPhong(maPhong).getMaPhong() );
                         System.out.println("||  Ngày nhận phòng         :"+danhSachPhong.timPhong(maPhong).getNgayNhanPhong().format(formatter));
                         System.out.println("||  Ngày trả phòng          :"+ngayThanhToan.format(formatter));
                         System.out.println("||  Giảm giá                :"+((PHONGVIP) danhSachPhong.timPhong(maPhong)).getPhanTramGiamGia()+"%");
                         System.out.println("||  Số tiện ích             :"+((PHONGVIP) danhSachPhong.timPhong(maPhong)).getTienich().length);
+                        System.out.println("||  Giá phòng               :"+danhSachPhong.timPhong(maPhong).getGiaPhong()+"VNĐ");
                         System.out.println("||  Giá mỗi tiện ích        :100 VNĐ");
                         System.out.println("||  Số tiền phải trả        :"+danhSachPhong.timPhong(maPhong).tinhGiaPhong2(ngayThanhToan)+"VNĐ");
                         System.out.println("||=====================================||");
@@ -648,6 +882,8 @@ public  class THAOTAC {
                                 System.out.println("Số dư hiện tại của bạn là: " + tk.soDu + " VNĐ");
                                 tk.xoaPhong(maPhong);
                                 danhSachPhong.timPhong(maPhong).setTinhTrangPhong("Đang dọn dẹp");
+                                danhSachPhong.timPhong(maPhong).setNgayNhanPhong(null);
+                                danhSachPhong.timPhong(maPhong).setNgayTraPhongDuKien(null);
                                 validChoice = true; // Đánh dấu rằng thanh toán đã thành công
                                 break; // Thoát vòng lặp nếu thanh toán thành công
                             }
@@ -731,7 +967,8 @@ public  class THAOTAC {
                 System.out.println("3. Quản lý khách hàng");
                 System.out.println("4. Quản lý Tài khoản khách hàng");
                 System.out.println("5. Quản lý dịch vụ");
-                System.out.println("6. Thoát");
+                System.out.println("6. Xem đánh giá của khách hàng");
+                System.out.println("7. Thoát");
                 System.out.print("Nhập lựa chọn của bạn: ");
 
                 choice = scanner.nextInt();
@@ -753,17 +990,27 @@ public  class THAOTAC {
                         me.quanLy();
                         break;
                     case 6:
-                        System.out.println("Thoát chương trình.");
-                        scanner.close();
-                        return; // Kết thúc chương trình
+                        xemDanhGia();
+                        break;
+                    case 7:
+                        System.out.println("Đã đăng xuất!");
+                        return;
                     default:
                         System.out.println("Lựa chọn không hợp lệ. Vui lòng thử lại.");
                 }
-
-                System.out.println();
             }
+    }
+    public static void xemDanhGia() {
+        System.out.println("-- ĐÁNH GIÁ CỦA KHÁCH HÀNG --");
 
-
+        // Kiểm tra nếu danh sách đánh giá không trống
+        if (danhSachfb != null && !danhSachfb.isEmpty()) {
+            for (int i = 0; i < danhSachfb.size(); i++) {
+                System.out.println((i + 1) + ". " + danhSachfb.get(i)); // In số thứ tự và đánh giá
+            }
+        } else {
+            System.out.println("Không có đánh giá nào được cung cấp.");
+        }
     }
     private static boolean attemptLogin(Scanner scanner) {
         int maxAttempts = 3;
@@ -800,7 +1047,7 @@ public  class THAOTAC {
 
             // Kiểm tra nếu người dùng chọn mục thoát
             if (choice == 6) {
-                System.out.println("Thoát chương trình. Tạm biệt!");
+                System.out.println("Thoát khỏi quản lý khách hàng!");
                 break;
             }
 
@@ -811,7 +1058,6 @@ public  class THAOTAC {
                 choice = scanner.nextInt();  // Nhập lại lựa chọn
                 scanner.nextLine(); // Đọc dòng trống
             }
-
             handleChoice(choice, khachHangList, scanner);
         }
     }
@@ -928,7 +1174,7 @@ public  class THAOTAC {
                         listNhanVien.tinhTongTienTheoTongLoaiNhanVien();
                         break;
                     case 8:
-                        System.out.println("Thoát chương trình.");
+                        System.out.println("Thoát khỏi quản lý nhân viên!");
                         break;
                     default:
                         System.out.println("DỮ LIỆU VÀO KHÔNG CHÍNH XÁC! Vui lòng chọn lại.");
@@ -956,6 +1202,8 @@ public  class THAOTAC {
             System.out.println("6. Xóa phòng theo mã");
             System.out.println("7. Sắp xếp phòng theo giá");
             System.out.println("8. Tính tổng tiền theo phòng");
+            System.out.println("9. Chỉnh sửa tình trạng phòng");
+            System.out.println("10. Chỉnh sửa thông tin phòng");
             System.out.println("0. Thoát");
             System.out.print("Nhập lựa chọn của bạn: ");
             choice = scanner.nextInt();
@@ -998,17 +1246,24 @@ public  class THAOTAC {
                 case 8:
                     danhSachPhong.tinhTongTienTheoPhong();
                     break;
+                case 9:
+                    danhSachPhong.chinhSuaTrangThaiPhong();
+                    break;
+                case 10:
+                    danhSachPhong.chinhSuaThongTinPhong();
+                    break;
                 case 0:
-                    System.out.println("Thoát chương trình.");
+                    System.out.println("Thoát khỏi quản lý phòng!");
                     return;
                 default:
                     System.out.println("Lựa chọn không hợp lệ! Vui lòng thử lại.");
                     break;
             }
-            System.out.println(); // In dòng trống để dễ đọc
+            System.out.println();
         } while (choice != 0);
 
         scanner.close();
 
     }
+
 }

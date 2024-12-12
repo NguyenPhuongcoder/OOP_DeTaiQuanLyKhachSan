@@ -28,15 +28,15 @@ public class TKKH {
         this.CCCD = CCCD;
     }
     public String getMaTK() {
-        return MaTK;
+        return this.MaTK;
     }
 
     public void setMaTK(String maTK) {
-        MaTK = maTK;
+        this.MaTK = maTK;
     }
 
     public String getCCCD() {
-        return CCCD;
+        return this.CCCD;
     }
 
     public void setCCCD(String CCCD) {
@@ -44,15 +44,15 @@ public class TKKH {
     }
 
     public String getSoDienThoai() {
-        return SoDienThoai;
+        return this.SoDienThoai;
     }
 
     public void setSoDienThoai(String soDienThoai) {
-        SoDienThoai = soDienThoai;
+        this.SoDienThoai = soDienThoai;
     }
 
     public String getMaTkhau() {
-        return maTkhau;
+        return this.maTkhau;
     }
 
     public void setMaTkhau(String maTkhau) {
@@ -60,7 +60,7 @@ public class TKKH {
     }
 
     public String getTenDangNhap() {
-        return tenDangNhap;
+        return this.tenDangNhap;
     }
 
     public void setTenDangNhap(String tenDangNhap) {
@@ -158,8 +158,9 @@ public class TKKH {
         System.out.println("CCCD: " + this.CCCD);
     }
     public void in() {
+        int i = 0;
         for (PHONG p : danhSachPhongThue) {
-            p.Xuat2();
+            System.out.print(++i); p.Xuat2();
         }
     }
 
