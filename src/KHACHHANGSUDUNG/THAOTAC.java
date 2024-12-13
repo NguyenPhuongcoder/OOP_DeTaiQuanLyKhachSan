@@ -46,11 +46,8 @@ public  class THAOTAC {
             System.out.println("2. Đăng nhập với tư cách NGƯỜI SỬ DỤNG");
             System.out.println("3. Thoát chương trình");
             System.out.print("Nhập lựa chọn của bạn (1/2/3): ");
-
             choice = scanner.nextInt();
             scanner.nextLine();
-
-
             switch (choice) {
                 case 1:
                     System.out.println("Bạn đã chọn đăng nhập với tư cách QUẢN LÝ.");
@@ -73,8 +70,6 @@ public  class THAOTAC {
 
         scanner.close(); // Đóng Scanner
     }
-
-
     // MENU KHACH HANG SU DUNG
     public static void menu() {
         Scanner scanner = new Scanner(System.in);
@@ -114,7 +109,6 @@ public  class THAOTAC {
         String username = sc.nextLine();
         System.out.print("Nhập mật khẩu: ");
         String password = sc.nextLine();
-        // Kiểm tra đăng nhập ở đây (giả sử có phương thức kiểm tra)
         TKKH tk = menu.kiemTraDangNhap(username, password);
         if (tk != null) {
             System.out.println("Đăng nhập thành công!");
@@ -1046,13 +1040,13 @@ public  class THAOTAC {
             scanner.nextLine(); // Đọc dòng trống
 
             // Kiểm tra nếu người dùng chọn mục thoát
-            if (choice == 6) {
+            if (choice == 8) {
                 System.out.println("Thoát khỏi quản lý khách hàng!");
                 break;
             }
 
             // Xử lý lựa chọn của người dùng
-            while (choice < 1 || choice > 6) {  // Kiểm tra nếu lựa chọn không hợp lệ
+            while (choice < 1 || choice > 8) {  // Kiểm tra nếu lựa chọn không hợp lệ
                 System.out.println("Lựa chọn không hợp lệ! Vui lòng chọn lại.");
                 showMenu();  // Hiển thị lại menu
                 choice = scanner.nextInt();  // Nhập lại lựa chọn
@@ -1069,8 +1063,10 @@ public  class THAOTAC {
         System.out.println("3. Chỉnh sửa thông tin khách hàng");
         System.out.println("4. Hiển thị danh sách khách hàng");
         System.out.println("5. Tính số ngày thuê của khách hàng");
-        System.out.println("6. Thoát");
-        System.out.print("Chọn chức năng (1-6): ");
+        System.out.println("6. tim kiếm khách hàng theo tên");
+        System.out.println("7. hiện thị danh sách khách hàng theo phòng");
+        System.out.println("8. Thoát");
+        System.out.print("Chọn chức năng (1-8): ");
     }
 
     public static void handleChoice(int choice, KhachHangList khachHangList, Scanner scanner) {
@@ -1080,6 +1076,8 @@ public  class THAOTAC {
             case 3 -> chinhSuaKhachHang(khachHangList, scanner);
             case 4 -> khachHangList.In();
             case 5 -> tinhSoNgayThue(khachHangList, scanner);
+            case 6 -> timKiemKhachHangTheoTen(khachHangList, scanner);
+            case 7 -> HienthiDSKHTheoPhong(khachHangList,scanner);
             default -> System.out.println("Lựa chọn không hợp lệ! Vui lòng chọn lại.");
         }
     }
@@ -1119,6 +1117,17 @@ public  class THAOTAC {
         String maKH = scanner.nextLine();
         khachHangList.chinhSuaThongTin(maKH);
     }
+    public static void timKiemKhachHangTheoTen(KhachHangList khachHangList, Scanner scanner){
+        System.out.println("xin mời nhap tên cần tìm: ");
+        String ten = scanner.nextLine();
+        khachHangList.timKiemKhachHangTheoTen(ten);
+    }
+
+    public static void HienthiDSKHTheoPhong(KhachHangList khachHangList, Scanner scanner){
+        System.out.println("Xin moi nhap ma phong");
+        String ma = scanner.nextLine();
+        khachHangList.hienThiKhachHangTheoPhong(ma);
+    }
 
     public static void tinhSoNgayThue(KhachHangList khachHangList, Scanner scanner) {
         System.out.print("Nhập mã khách hàng để tính số ngày thuê: ");
@@ -1139,7 +1148,8 @@ public  class THAOTAC {
             System.out.println("5. Tìm nhân viên theo mã");
             System.out.println("6. Sắp xếp nhân viên theo mức lương");
             System.out.println("7. Tính tổng lương theo loại nhân viên");
-            System.out.println("8. Thoát");
+            System.out.println("8. GhiFile");
+            System.out.println("9. Thoát");
             System.out.print("Mời bạn chọn: ");
 
             try {
@@ -1174,6 +1184,8 @@ public  class THAOTAC {
                         listNhanVien.tinhTongTienTheoTongLoaiNhanVien();
                         break;
                     case 8:
+                        listNhanVien.GhiFile();
+                    case 9:
                         System.out.println("Thoát khỏi quản lý nhân viên!");
                         break;
                     default:

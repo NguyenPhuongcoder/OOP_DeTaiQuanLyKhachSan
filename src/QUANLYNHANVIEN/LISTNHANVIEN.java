@@ -4,11 +4,12 @@ import QUANLYPHONG.PHONG;
 import QUANLYPHONG.PHONGTHUONG;
 import QUANLYPHONG.PHONGVIP;
 
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class LISTNHANVIEN {
+public class LISTNHANVIEN implements IFILENHANVIEN {
     private HashMap<String, NHANVIEN> danhSach;
     private Scanner sc;
 
@@ -214,5 +215,45 @@ public class LISTNHANVIEN {
             System.out.println("Tổng tiền nhân viên quản lý: " + tongLuongQL + " VNĐ");
             System.out.println("Tổng tiền nhân viên vệ sinh: " + tongLuongVS + " VNĐ");
         }
+
+    public void GhiFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("NhanVien.txt"))) {
+            for (NHANVIEN nv : danhSach.values()) {
+                writer.write(nv.toString());  // Giả sử phương thức toString() đã được ghi đè trong lớp NHANVIEN
+                writer.newLine();
+            }
+            System.out.println("Đã ghi danh sách nhân viên vào file " + "NhanVien.txt");
+        } catch (IOException e) {
+            System.out.println("Lỗi khi ghi vào file: " + e.getMessage());
+        }
+    }
+
+    public void DocFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("NhanVien.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] thongTin = line.split(",");
+                NHANVIEN nv = new NHANVIEN();
+
+                nv.setMaNhanVien(thongTin[0]);
+                nv.setHoTen(thongTin[1]);
+                nv.setNgaySinh(new SimpleDateFormat("dd/MM/yyyy").parse(thongTin[2]));
+                nv.setCCCD(thongTin[3]);
+                nv.setGioiTinh(thongTin[4]);
+                nv.setEmail(thongTin[5]);
+                nv.setChucVu(thongTin[6]);
+                nv.setTrinhDo(thongTin[7]);
+                nv.setKinhNghiem(Integer.parseInt(thongTin[8]));
+                nv.setMucLuong(Double.parseDouble(thongTin[9]));
+                nv.setPhuCap(Double.parseDouble(thongTin[10]));
+                themNhanVienVaoDanhSach(nv);
+            }
+            System.out.println("Đã đọc danh sách nhân viên từ file " + "NhanVien.txt");
+        } catch (IOException e) {
+            System.out.println("Lỗi khi đọc từ file: " + e.getMessage());
+        } catch (ParseException e) {
+            System.out.println("Lỗi khi phân tích ngày sinh: " + e.getMessage());
+        }
+    }
 
 }

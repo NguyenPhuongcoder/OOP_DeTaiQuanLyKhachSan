@@ -1,0 +1,13 @@
+Mã nhân viên: 321
+Họ tên: huy
+Ngày sinh: 20/09/2004
+CCCD: 111222039453
+Giới tính: nam
+Email: dsa@gmau
+Chức vụ: truowngr
+Trình độ: dai hoc
+Kinh nghiệm: 4 năm
+Mức lương: 100000.00
+Phụ cấp: 424242.00
+Khu vực phụ trách: tang 1
+Giờ làm việc: 2h-4h

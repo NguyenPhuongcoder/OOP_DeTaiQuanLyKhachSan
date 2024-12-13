@@ -30,14 +30,13 @@ public class KhachHangList implements QuanLyKhachHang {
 
     @Override
     public void chinhSuaThongTin(String maKH) {
-        // Nội dung như đã có trong mã gốc
         Scanner scanner = new Scanner(System.in);
         KhachHang khachHangCanSua = null;
 
         // Tìm khách hàng cần chỉnh sửa
-        for (int i = 0; i < dsKhachHang.size(); i++) {
-            if (dsKhachHang.get(i).maKH.equals(maKH)) {
-                khachHangCanSua = dsKhachHang.get(i);
+        for (KhachHang kh : dsKhachHang) {
+            if (kh.maKH.equals(maKH)) {
+                khachHangCanSua = kh;
                 break;
             }
         }
@@ -134,6 +133,45 @@ public class KhachHangList implements QuanLyKhachHang {
         }
         if (!khachHangTimThay) {
             System.out.println("Không tìm thấy khách hàng với mã: " + maKH);
+        }
+    }
+
+    // Phương thức mới: Tìm kiếm khách hàng theo tên
+    public void timKiemKhachHangTheoTen(String tenKH) {
+        boolean khachHangTimThay = false;
+        for (KhachHang kh : dsKhachHang) {
+            if (kh.tenKH.equalsIgnoreCase(tenKH)) {
+                khachHangTimThay = true;
+                kh.Xuat(); // Hiển thị thông tin khách hàng tìm thấy
+            }
+        }
+        if (!khachHangTimThay) {
+            System.out.println("Không tìm thấy khách hàng với tên: " + tenKH);
+        }
+    }
+
+    // Phương thức mới: Hiển thị danh sách khách hàng theo phòng
+    public void hienThiKhachHangTheoPhong(String maPhong) {
+        boolean khachHangTimThay = false;
+        for (KhachHang kh : dsKhachHang) {
+            if (kh.maPhong.equals(maPhong)) {
+                khachHangTimThay = true;
+                kh.Xuat(); // Hiển thị thông tin khách hàng trong phòng
+            }
+        }
+        if (!khachHangTimThay) {
+            System.out.println("Không tìm thấy khách hàng trong phòng: " + maPhong);
+        }
+    }
+
+    // Phương thức mới: Hiển thị danh sách tất cả các khách hàng
+    public void hienThiTatCaKhachHang() {
+        if (dsKhachHang.isEmpty()) {
+            System.out.println("Chưa có dữ liệu khách hàng nào.");
+        } else {
+            for (KhachHang kh : dsKhachHang) {
+                kh.Xuat(); // Hiển thị thông tin tất cả các khách hàng
+            }
         }
     }
 }
