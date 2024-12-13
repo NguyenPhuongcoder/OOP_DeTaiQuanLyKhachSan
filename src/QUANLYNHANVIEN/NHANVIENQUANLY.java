@@ -11,10 +11,13 @@ public class NHANVIENQUANLY extends NHANVIEN {
         super(); // Gọi constructor của lớp cha NHANVIEN
     }
 
-    public NHANVIENQUANLY(String maNhanVien, String hoTen, Date ngaySinh, String CCCD, String gioiTinh, String email,
-                          String chucVu, double mucLuong, double phuCap, String trinhDo, int kinhNghiem,
-                          Scanner sc, int soLuong, String phanQuyen) {
-        super(maNhanVien, hoTen, ngaySinh, CCCD, gioiTinh, email, chucVu, mucLuong, phuCap, trinhDo, kinhNghiem);
+    public NHANVIENQUANLY(String maNhanVien, String hoTen, Date ngaySinh, String CCCD,
+                          String gioiTinh, String email, String chucVu, double mucLuong,
+                          double phuCap, String trinhDo, int kinhNghiem,
+                          int soLuong, String phanQuyen) {
+        // Gọi phương thức khởi tạo của lớp cha
+        super(maNhanVien, hoTen, ngaySinh, CCCD, gioiTinh, email, chucVu, mucLuong,
+                phuCap, trinhDo, kinhNghiem);
         this.soLuong = soLuong;
         this.phanQuyen = phanQuyen;
     }
@@ -58,15 +61,13 @@ public class NHANVIENQUANLY extends NHANVIEN {
     @Override
     public void hienThiThongTin() {
         super.hienThiThongTin(); // Gọi phương thức hiển thị thông tin của lớp cha
-        System.out.println("Số lượng nhân viên quản lý: " + soLuong);
-        System.out.println("Phân quyền: " + phanQuyen);
+        System.out.printf("%-15s: %d%n", "Số lượng nhân viên", soLuong);
+        System.out.printf("%-15s: %s%n", "Phân quyền", phanQuyen);
     }
 
     @Override
     public String toString() {
-        return super.toString() + "" +
-                "Số lượng nhân viên quản lý: " + soLuong + "\n" +
-                "Phân quyền: " + phanQuyen;
+        return super.toString() + "," + soLuong + "," + phanQuyen;
     }
 
     // Phân công công việc cho nhân viên

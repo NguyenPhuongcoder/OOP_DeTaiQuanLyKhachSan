@@ -13,6 +13,22 @@ public class NHANVIENLETAN extends NHANVIEN {
         super(); // Gọi constructor của lớp cha NHANVIEN
     }
 
+    public NHANVIENLETAN(String maNhanVien, String hoTen, Date ngaySinh, String CCCD,
+                         String gioiTinh, String email, String chucVu, double mucLuong,
+                         double phuCap, String trinhDo, int kinhNghiem,
+                         String caLamViec, String kiNang) {
+        // Gọi phương thức khởi tạo của lớp cha
+        super(maNhanVien, hoTen, ngaySinh, CCCD, gioiTinh, email, chucVu, mucLuong,
+                phuCap, trinhDo, kinhNghiem);
+        this.caLamViec = caLamViec;
+        this.kiNang = kiNang;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "," + caLamViec + "," + kiNang;
+    }
+
     public String getCaLamViec() {
         return caLamViec;
     }
@@ -46,16 +62,11 @@ public class NHANVIENLETAN extends NHANVIEN {
     @Override
     public void hienThiThongTin() {
         super.hienThiThongTin(); // Gọi phương thức hiển thị thông tin của lớp cha
-        System.out.println("Ca làm việc: " + caLamViec);
-        System.out.println("Kỹ năng: " + kiNang);
+        System.out.printf("%-15s: %s%n", "Ca làm việc", caLamViec);
+        System.out.printf("%-15s: %s%n", "Kỹ năng", kiNang);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "\n" +
-                "Ca làm việc: " + caLamViec + "\n" +
-                "Kỹ năng: " + kiNang;
-    }
+
 
     // Phương thức đặt lịch hẹn với khách hàng
     public void datLichHen(String khachHang, Date thoiGian) {

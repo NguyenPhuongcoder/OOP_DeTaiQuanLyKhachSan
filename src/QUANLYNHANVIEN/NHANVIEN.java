@@ -1,8 +1,7 @@
 package QUANLYNHANVIEN;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 
 public class NHANVIEN {
     protected String maNhanVien, hoTen;
@@ -13,8 +12,14 @@ public class NHANVIEN {
     protected int kinhNghiem;
     protected Scanner sc = new Scanner(System.in);
 
+    private static Set<String> danhSachCCCD = new HashSet<>(); // Tập hợp CCCD
+    private static Set<String> danhSachEmail = new HashSet<>(); // Tập hợp Email
+    private static Set<String> danhSachMaNhanVien = new HashSet<>(); // Tập hợp mã nhân viên
+
     public NHANVIEN() {
     }
+
+
 
     public String getMaNhanVien() {
         return maNhanVien;
@@ -104,7 +109,9 @@ public class NHANVIEN {
         this.kinhNghiem = kinhNghiem;
     }
 
-    public NHANVIEN(String maNhanVien, String hoTen, Date ngaySinh, String CCCD, String gioiTinh, String email, String chucVu, double mucLuong, double phuCap, String trinhDo, int kinhNghiem) {
+    public NHANVIEN(String maNhanVien, String hoTen, Date ngaySinh, String CCCD, String gioiTinh,
+                    String email, String chucVu, double mucLuong, double phuCap,
+                    String trinhDo, int kinhNghiem) {
         this.maNhanVien = maNhanVien;
         this.hoTen = hoTen;
         this.ngaySinh = ngaySinh;
@@ -119,12 +126,13 @@ public class NHANVIEN {
     }
 
     // Các phương thức getter và setter
-
     public void nhapMaNhanVien() {
         do {
-            System.out.print("Nhập mã nhân viên (không được rỗng): ");
+            System.out.print("Nhập mã nhân viên (không được rỗng và không trùng lặp): ");
             maNhanVien = sc.nextLine();
-        } while (maNhanVien.isEmpty());
+        } while (maNhanVien.isEmpty() || danhSachMaNhanVien.contains(maNhanVien));
+
+        danhSachMaNhanVien.add(maNhanVien); // Thêm mã nhân viên vào tập hợp
     }
 
     public void nhapHoTen() {
@@ -139,8 +147,13 @@ public class NHANVIEN {
             System.out.print("Nhập ngày sinh (dd/MM/yyyy): ");
             String ngaySinhStr = sc.nextLine();
             try {
-                ngaySinh = new SimpleDateFormat("dd/MM/yyyy").parse(ngaySinhStr);
-                break;
+                Date date = new SimpleDateFormat("dd/MM/yyyy").parse(ngaySinhStr);
+                if (isGreaterThan18(date)) {
+                    ngaySinh = date;
+                    break;
+                } else {
+                    System.out.println("Nhân viên phải trên 18 tuổi. Vui lòng nhập lại.");
+                }
             } catch (Exception e) {
                 System.out.println("Ngày sinh không hợp lệ. Vui lòng nhập lại.");
             }
@@ -149,9 +162,11 @@ public class NHANVIEN {
 
     public void nhapCCCD() {
         do {
-            System.out.print("Nhập CCCD (đủ 12 số): ");
+            System.out.print("Nhập CCCD (đủ 12 số và không trùng lặp): ");
             CCCD = sc.nextLine();
-        } while (CCCD.length() != 12);
+        } while (CCCD.length() != 12 || danhSachCCCD.contains(CCCD));
+
+        danhSachCCCD.add(CCCD); // Thêm CCCD vào tập hợp
     }
 
     public void nhapGioiTinh() {
@@ -163,9 +178,11 @@ public class NHANVIEN {
 
     public void nhapEmail() {
         do {
-            System.out.print("Nhập email (định dạng: example@domain.com): ");
+            System.out.print("Nhập email (định dạng: example@domain.com và không trùng lặp): ");
             email = sc.nextLine();
-        } while (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"));
+        } while (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$") || danhSachEmail.contains(email));
+
+        danhSachEmail.add(email); // Thêm email vào tập hợp
     }
 
     public void nhapChucVu() {
@@ -191,7 +208,7 @@ public class NHANVIEN {
             }
             kinhNghiem = sc.nextInt();
         } while (kinhNghiem < 0);
-        sc.nextLine(); // Để đọc ký tự xuống dòng
+        sc.nextLine();
     }
 
     public void nhapMucLuong() {
@@ -208,14 +225,22 @@ public class NHANVIEN {
 
     public void nhapPhuCap() {
         do {
-            System.out.print("Nhập phụ cấp (>= 0): ");
+            System.out.print("Nhập phụ cấp (>= 0 và nhỏ hơn mức lương): ");
             while (!sc.hasNextDouble()) {
                 System.out.println("Phụ cấp phải là số thực. Vui lòng nhập lại.");
                 sc.next();
             }
             phuCap = sc.nextDouble();
-        } while (phuCap < 0);
+        } while (phuCap < 0 || phuCap >= mucLuong); // Kiểm tra phụ cấp phải nhỏ hơn mức lương
         sc.nextLine(); // Để đọc ký tự xuống dòng
+    }
+
+    // Phương thức kiểm tra ngày sinh
+    private boolean isGreaterThan18(Date birthDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(birthDate);
+        cal.add(Calendar.YEAR, 18); // Cộng thêm 18 năm vào ngày sinh
+        return cal.before(Calendar.getInstance()); // So sánh với ngày hiện tại
     }
 
     // Phương thức nhập thông tin nhân viên
@@ -233,40 +258,35 @@ public class NHANVIEN {
         nhapPhuCap();
     }
 
-    // Phương thức để hiển thị thông tin nhân viên
-    public void hienThiThongTin() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        System.out.println("Mã nhân viên: " + maNhanVien);
-        System.out.println("Họ tên: " + hoTen);
-        System.out.println("Ngày sinh: " + sdf.format(ngaySinh));
-        System.out.println("CCCD: " + CCCD);
-        System.out.println("Giới tính: " + gioiTinh);
-        System.out.println("Email: " + email);
-        System.out.println("Chức vụ: " + chucVu);
-        System.out.println("Trình độ: " + trinhDo);
-        System.out.println("Kinh nghiệm: " + kinhNghiem + " năm");
-        System.out.printf("Mức lương: %.2f\n", mucLuong);
-        System.out.printf("Phụ cấp: %.2f\n", phuCap);
-    }
+
+// Phương thức để hiển thị thông tin nhân viên
+public void hienThiThongTin() {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+    // Header
+    System.out.printf("%-15s: %s%n", "Mã nhân viên", maNhanVien);
+    System.out.printf("%-15s: %s%n", "Họ tên", hoTen);
+    System.out.printf("%-15s: %s%n", "Ngày sinh", sdf.format(ngaySinh));
+    System.out.printf("%-15s: %s%n", "CCCD", CCCD);
+    System.out.printf("%-15s: %s%n", "Giới tính", gioiTinh);
+    System.out.printf("%-15s: %s%n", "Email", email);
+    System.out.printf("%-15s: %s%n", "Chức vụ", chucVu);
+    System.out.printf("%-15s: %s%n", "Trình độ", trinhDo);
+    System.out.printf("%-15s: %d năm%n", "Kinh nghiệm", kinhNghiem);
+    System.out.printf("%-15s: %.2f VNĐ%n", "Mức lương", mucLuong);
+    System.out.printf("%-15s: %.2f VNĐ%n", "Phụ cấp", phuCap);
+}
 
     // Phương thức toString để biểu diễn đối tượng dưới dạng chuỗi
     @Override
     public String toString() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        return "Mã nhân viên: " + maNhanVien + "\n" +
-                "Họ tên: " + hoTen + "\n" +
-                "Ngày sinh: " + sdf.format(ngaySinh) + "\n" +
-                "CCCD: " + CCCD + "\n" +
-                "Giới tính: " + gioiTinh + "\n" +
-                "Email: " + email + "\n" +
-                "Chức vụ: " + chucVu + "\n" +
-                "Trình độ: " + trinhDo + "\n" +
-                "Kinh nghiệm: " + kinhNghiem + " năm\n" +
-                String.format("Mức lương: %.2f\n", mucLuong) +
-                String.format("Phụ cấp: %.2f\n", phuCap);
+        return maNhanVien + "," + hoTen + "," + ngaySinh.getTime() + "," + CCCD + ","
+                + gioiTinh + "," + email + "," + chucVu + "," + mucLuong + ","
+                + phuCap + "," + trinhDo + "," + kinhNghiem;
     }
 
-    // Phương thức tính lương tổng
+
+// Phương thức tính lương tổng
     public double tinhLuong() {
         return  phuCap + mucLuong;
     }

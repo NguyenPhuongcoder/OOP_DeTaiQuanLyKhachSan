@@ -46,26 +46,30 @@ public class LISTNHANVIEN implements IFILENHANVIEN {
                     System.out.println("--> NHÂN VIÊN BẢO VỆ");
                     nv = new NHANVIENBAOVE();
                     nv.nhapThongTin();
+                    nv.setChucVu("Bảo vệ");
                     themNhanVienVaoDanhSach(nv);
                     break;
                 case 2:
                     System.out.println("--> NHÂN VIÊN LỄ TÂN");
                     nv = new NHANVIENLETAN();
                     nv.nhapThongTin();
+                    nv.setChucVu("Lễ tân");
                     themNhanVienVaoDanhSach(nv);
                     break;
                 case 3:
                     System.out.println("--> NHÂN VIÊN QUẢN LÝ");
                     nv = new NHANVIENQUANLY();
                     nv.nhapThongTin();
+                    nv.setChucVu("Quản lý");
                     themNhanVienVaoDanhSach(nv);
                     break;
                 case 4:
                     System.out.println("--> NHÂN VIÊN VỆ SINH");
                     nv = new NHANVIENVESINH();
                     nv.nhapThongTin();
+                    nv.setChucVu("Vệ sinh");
                     themNhanVienVaoDanhSach(nv);
-
+                    break;
                 case 5:
                     System.out.println("THOÁT");
                     return;
@@ -153,7 +157,7 @@ public class LISTNHANVIEN implements IFILENHANVIEN {
             System.out.println("Danh sách nhân viên trống.");
         } else {
             for (NHANVIEN nv : danhSach.values()) {
-                System.out.println(nv.toString());
+                nv.hienThiThongTin();
                 System.out.println("----------------------------");
             }
         }
@@ -217,41 +221,71 @@ public class LISTNHANVIEN implements IFILENHANVIEN {
         }
 
     public void GhiFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("NhanVien.txt"))) {
-            for (NHANVIEN nv : danhSach.values()) {
-                writer.write(nv.toString());  // Giả sử phương thức toString() đã được ghi đè trong lớp NHANVIEN
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FileName))) {
+            for (NHANVIEN nv : danhSach.values()) { // Sử dụng values() để lấy danh sách nhân viên
+                writer.write(nv.toString());
                 writer.newLine();
             }
-            System.out.println("Đã ghi danh sách nhân viên vào file " + "NhanVien.txt");
+            System.out.println("Ghi file thành công!"); // Thông báo khi ghi thành công
         } catch (IOException e) {
-            System.out.println("Lỗi khi ghi vào file: " + e.getMessage());
+            System.err.println("Lỗi khi ghi file: " + e.getMessage()); // Thông báo lỗi nếu có
+            e.printStackTrace();
         }
     }
-
     public void DocFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("NhanVien.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FileName))) {
             String line;
+            boolean hasData = false; // Biến để kiểm tra xem có dữ liệu trong file hay không
             while ((line = reader.readLine()) != null) {
-                String[] thongTin = line.split(",");
-                NHANVIEN nv = new NHANVIEN();
-                nv.setMaNhanVien(thongTin[0]);
-                nv.setHoTen(thongTin[1]);
-                nv.setNgaySinh(new SimpleDateFormat("dd/MM/yyyy").parse(thongTin[2]));
-                nv.setCCCD(thongTin[3]);
-                nv.setGioiTinh(thongTin[4]);
-                nv.setEmail(thongTin[5]);
-                nv.setChucVu(thongTin[6]);
-                nv.setTrinhDo(thongTin[7]);
-                nv.setKinhNghiem(Integer.parseInt(thongTin[8]));
-                nv.setMucLuong(Double.parseDouble(thongTin[9]));
-                nv.setPhuCap(Double.parseDouble(thongTin[10]));
-                themNhanVienVaoDanhSach(nv);
+                hasData = true; // Nếu có dòng đọc được, gán hasData = true
+                String[] data = line.split(",");
+                String chucVu = data[6]; // Kiểm tra loại nhân viên từ trường chức vụ
+
+                NHANVIEN nv = null;
+                switch (chucVu) {
+                    case "Bảo vệ":
+                        nv = new NHANVIENBAOVE(data[0], data[1], new Date(Long.parseLong(data[2])), data[3],
+                                data[4], data[5], data[6], Double.parseDouble(data[7]),
+                                Double.parseDouble(data[8]), data[9], Integer.parseInt(data[10]),
+                                data[11], data[12]);
+                        break;
+                    case "Lễ tân":
+                        nv = new NHANVIENLETAN(data[0], data[1], new Date(Long.parseLong(data[2])), data[3],
+                                data[4], data[5], data[6], Double.parseDouble(data[7]),
+                                Double.parseDouble(data[8]), data[9], Integer.parseInt(data[10]),
+                                data[11], data[12]);
+                        break;
+                    case "Quản lý":
+                        nv = new NHANVIENQUANLY(data[0], data[1], new Date(Long.parseLong(data[2])), data[3],
+                                data[4], data[5], data[6], Double.parseDouble(data[7]),
+                                Double.parseDouble(data[8]), data[9], Integer.parseInt(data[10]),
+                                Integer.parseInt(data[11]), data[12]);
+                        break;
+                    case "Vệ sinh":
+                        nv = new NHANVIENVESINH(data[0], data[1], new Date(Long.parseLong(data[2])), data[3],
+                                data[4], data[5], data[6], Double.parseDouble(data[7]),
+                                Double.parseDouble(data[8]), data[9], Integer.parseInt(data[10]),
+                                data[11], data[12], data[13]);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + chucVu);
+                }
+                if (nv != null) {
+                    danhSach.put(nv.getMaNhanVien(), nv); // Thêm nhân viên vào HashMap
+                }
             }
-            System.out.println("Đã đọc danh sách nhân viên từ file " + "NhanVien.txt");
+
+            // Kiểm tra và in thông báo khi đọc file thành công
+            if (hasData) {
+                System.out.println("Đọc file thành công!");
+            } else {
+                System.out.println("File rỗng hoặc không có dữ liệu.");
+            }
         } catch (IOException e) {
-            System.out.println("Lỗi khi đọc từ file: " + e.getMessage());
-        } catch (ParseException e) {
-            System.out.println("Lỗi khi phân tích ngày sinh: " + e.getMessage());
+            System.err.println("Lỗi khi đọc file: " + e.getMessage()); // Thông báo lỗi nếu có
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            System.err.println(e.getMessage()); // Thông báo lỗi nếu có tình huống không mong muốn
         }
     }
 

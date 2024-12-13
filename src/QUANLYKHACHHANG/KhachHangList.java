@@ -5,31 +5,36 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 // Lớp KhachHangList triển khai interface QuanLyKhachHang
-public class KhachHangList implements QuanLyKhachHang {
+public class KhachHangList implements IFILE {
     ArrayList<KhachHang> dsKhachHang = new ArrayList<>(); // Danh sách khách hàng
 
-    @Override
     public void In() {
         if (dsKhachHang.isEmpty()) {
             System.out.println("Chưa có dữ liệu khách hàng nào.");
         } else {
             for (KhachHang kh : dsKhachHang) {
-                kh.Xuat(); // Hiển thị thông tin khách hàng
+                kh.Xuat();
+                System.out.println("--------------------------------");
             }
         }
     }
 
-    @Override
     public void khachHangMoi(KhachHang kh) {
         dsKhachHang.add(kh); // Thêm khách hàng mới vào danh sách
     }
 
-    @Override
+
     public void xoaKhachHang(String maKH) {
-        dsKhachHang.removeIf(kh -> kh.maKH.equals(maKH)); // Xóa khách hàng theo mã
+        boolean removed = dsKhachHang.removeIf(kh -> kh.maKH.equals(maKH)); // Xóa khách hàng theo mã
+
+        // Kiểm tra xem có khách hàng nào bị xóa hay không
+        if (removed) {
+            System.out.println("Đã xóa khách hàng với mã: " + maKH);
+        } else {
+            System.out.println("Không tìm thấy khách hàng với mã: " + maKH);
+        }
     }
 
-    @Override
     public void chinhSuaThongTin(String maKH) {
         Scanner scanner = new Scanner(System.in);
         KhachHang khachHangCanSua = null;
@@ -116,26 +121,6 @@ public class KhachHangList implements QuanLyKhachHang {
         }
     }
 
-    @Override
-    public void tinhSoNgayThue(String maKH) {
-        boolean khachHangTimThay = false;
-
-        for (KhachHang kh : dsKhachHang) {
-            if (kh.maKH.equals(maKH)) {
-                khachHangTimThay = true;
-                if (kh.ngayNhanPhong != null && kh.ngayTraPhong != null) {
-                    long days = java.time.Duration.between(kh.ngayNhanPhong, kh.ngayTraPhong).toDays(); // Tính số ngày thuê
-                    System.out.println("Số ngày thuê của khách hàng " + maKH + ": " + days);
-                } else {
-                    System.out.println("Khách hàng " + maKH + " chưa có đủ thông tin ngày nhận hoặc ngày trả.");
-                }
-                break;
-            }
-        }
-        if (!khachHangTimThay) {
-            System.out.println("Không tìm thấy khách hàng với mã: " + maKH);
-        }
-    }
 
     // Phương thức mới: Tìm kiếm khách hàng theo tên
     public void timKiemKhachHangTheoTen(String tenKH) {
@@ -157,7 +142,8 @@ public class KhachHangList implements QuanLyKhachHang {
         for (KhachHang kh : dsKhachHang) {
             if (kh.maPhong.equals(maPhong)) {
                 khachHangTimThay = true;
-                kh.Xuat(); // Hiển thị thông tin khách hàng trong phòng
+                kh.Xuat();
+                System.out.println("----------------------");// Hiển thị thông tin khách hàng trong phòng
             }
         }
         if (!khachHangTimThay) {
@@ -177,7 +163,8 @@ public class KhachHangList implements QuanLyKhachHang {
     }
 
     // Phương thức ghi dữ liệu khách hàng vào file
-    public void ghiFile() {
+    @Override
+    public void GhiFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("KhachHang.txt"))) {
             for (KhachHang kh : dsKhachHang) {
                 writer.write(kh.maKH + "," + kh.tenKH + "," + kh.maPhong + "," + kh.tenPhong + ","
@@ -191,7 +178,8 @@ public class KhachHangList implements QuanLyKhachHang {
     }
 
     // Phương thức đọc dữ liệu khách hàng từ file
-    public void docFile() {
+    @Override
+    public void DocFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader("KhachHang.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {

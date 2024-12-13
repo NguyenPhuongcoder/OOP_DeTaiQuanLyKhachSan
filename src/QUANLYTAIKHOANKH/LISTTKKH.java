@@ -1,9 +1,11 @@
 package QUANLYTAIKHOANKH;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class LISTTKKH {
+
+public class LISTTKKH implements IFLIE {
     private static ArrayList<TKKH> list;
     private Scanner scanner;
 
@@ -12,16 +14,63 @@ public class LISTTKKH {
         this.list = new ArrayList<>();
         this.scanner = new Scanner(System.in);
     }
-
-    // Hàm thêm tài khoản
-    public static void themTKKH() {
-        TKKH tk = new TKKH(); // Giả sử có constructor mặc định
-        System.out.println("Nhập thông tin tài khoản mới:");
-        tk.nhapThongTin(); // Nhập thông tin tài khoản
-        list.add(tk); // Thêm tài khoản vào danh sách
-        System.out.println("Thêm tài khoản thành công!");
+    public static boolean checkTrungCCCD(String cccd) {
+        for (TKKH tk : list) {
+            if (tk.getCCCD().equals(cccd)) { // Giả sử có phương thức getCCCD()
+                return true; // Tìm thấy trùng
+            }
+        }
+        return false; // Không tìm thấy
     }
 
+    // Kiểm tra trùng số điện thoại
+    public static boolean checkTrungSDT(String soDienThoai) {
+        for (TKKH tk : list) {
+            if (tk.getSoDienThoai().equals(soDienThoai)) { // Giả sử có phương thức getSoDienThoai()
+                return true; // Tìm thấy trùng
+            }
+        }
+        return false; // Không tìm thấy
+    }
+
+    // Kiểm tra trùng mã tài khoản
+    public static boolean checkTrungMaTK(String maTK) {
+        for (TKKH tk : list) {
+            if (tk.getMaTK().equals(maTK)) { // Giả sử có phương thức getMaTK()
+                return true; // Tìm thấy trùng
+            }
+        }
+        return false; // Không tìm thấy
+    }
+    // Hàm thêm tài khoản
+    public static void themTKKH() {
+        System.out.println("-- THÊM TÀI KHOẢN --");
+        TKKH tk = new TKKH(); // Giả sử có constructor mặc định
+        System.out.println("Nhập thông tin tài khoản mới:");
+
+        // Nhập thông tin tài khoản mới
+        if (tk.nhapThongTin()) { // Giả sử phương thức nhapThongTin() nhập và kiểm tra thông tin
+            // Kiểm tra trùng CCCD, số điện thoại và mã tài khoản
+            if (checkTrungMaTK(tk.getMaTK())) {
+                System.out.println("Thêm tài khoản thất bại do trùng mã tài khoản.");
+                return;
+            }
+            if (checkTrungCCCD(tk.getCCCD())) {
+                System.out.println("Thêm tài khoản thất bại do trùng CCCD.");
+                return;
+            }
+            if (checkTrungSDT(tk.getSoDienThoai())) {
+                System.out.println("Thêm tài khoản thất bại do trùng số điện thoại.");
+                return;
+            }
+
+            // Nếu không có trường hợp trùng nào, thêm tài khoản vào danh sách
+            list.add(tk); // Thêm tài khoản vào danh sách
+            System.out.println("Thêm tài khoản thành công!");
+        } else {
+            System.out.println("Thêm tài khoản thất bại do thông tin không hợp lệ.");
+        }
+    }
     public TKKH kiemTraDangNhap(String username, String password) {
         for (TKKH user : list ) {
             if (user.getTenDangNhap().equals(username) && user.getMaTkhau().equals(password)) {
@@ -30,8 +79,8 @@ public class LISTTKKH {
         }
         return null; // Không tìm thấy tài khoản
     }
-    // Hàm sửa thông tin tài khoản
     public static void suaTKKH() {
+        System.out.println("-- SỬA THÔNG TIN --");
         Scanner scanner = new Scanner(System.in);
         KIEMTRA kt = new KIEMTRA();
         System.out.print("Nhập mã tài khoản cần sửa: ");
@@ -51,41 +100,70 @@ public class LISTTKKH {
             scanner.nextLine(); // Để bỏ qua ký tự newline
 
             switch (luaChon) {
-                case 1:
-                    System.out.print("Nhập tên đăng nhập mới: ");
-                    String tenDangNhap = scanner.nextLine();
-                    tk.setTenDangNhap(tenDangNhap); // Giả sử có phương thức setTenDangNhap()
-                    System.out.println("Cập nhật tên đăng nhập thành công!");
+                case 1: // Cập nhật tên đăng nhập
+                    String tenDangNhap;
+                    do {
+                        System.out.print("Nhập tên đăng nhập mới: ");
+                        tenDangNhap = scanner.nextLine();
+                        if (!checkTrungMaTK(tenDangNhap)) {
+                            tk.setTenDangNhap(tenDangNhap);
+                            System.out.println("Cập nhật tên đăng nhập thành công!");
+                            break;
+                        } else {
+                            System.out.println("Tên đăng nhập đã tồn tại. Vui lòng nhập lại.");
+                        }
+                    } while (true);
                     break;
-                case 2:
-                    System.out.print("Nhập mật khẩu mới: ");
-                    String matKhau = scanner.nextLine();
-                    tk.setMaTkhau(matKhau); // Giả sử có phương thức setMatKhau()
-                    System.out.println("Cập nhật mật khẩu thành công!");
+
+                case 2: // Cập nhật mật khẩu
+                    String matKhau;
+                    do {
+                        System.out.print("Nhập mật khẩu mới: ");
+                        matKhau = scanner.nextLine();
+                        if (kt.kiemTraDoManhMatKhau(matKhau)) {
+                            tk.setMaTkhau(matKhau);
+                            System.out.println("Cập nhật mật khẩu thành công!");
+                            break;
+                        } else {
+                            System.out.println("Mật khẩu không hợp lệ. Vui lòng nhập lại.");
+                        }
+                    } while (true);
                     break;
-                case 3:
-                    System.out.print("Nhập số điện thoại mới: ");
-                    String soDienThoai = scanner.nextLine();
-                    if (kt.checkSdt(soDienThoai)) { // Giả sử có phương thức checkSoDienThoai()
-                        tk.setSoDienThoai(soDienThoai); // Giả sử có phương thức setSoDienThoai()
-                        System.out.println("Cập nhật số điện thoại thành công!");
-                    } else {
-                        System.out.println("Số điện thoại không hợp lệ.");
-                    }
+
+                case 3: // Cập nhật số điện thoại
+                    String soDienThoai;
+                    do {
+                        System.out.print("Nhập số điện thoại mới: ");
+                        soDienThoai = scanner.nextLine();
+                        if (kt.checkSdt(soDienThoai) && !checkTrungSDT(soDienThoai)) {
+                            tk.setSoDienThoai(soDienThoai);
+                            System.out.println("Cập nhật số điện thoại thành công!");
+                            break;
+                        } else {
+                            System.out.println("Số điện thoại không hợp lệ hoặc đã tồn tại. Vui lòng nhập lại.");
+                        }
+                    } while (true);
                     break;
-                case 4:
-                    System.out.print("Nhập CCCD mới: ");
-                    String cccd = scanner.nextLine();
-                    if (kt.checkCCCD(cccd)) { // Giả sử có phương thức checkCCCD()
-                        tk.setCCCD(cccd); // Giả sử có phương thức setCCCD()
-                        System.out.println("Cập nhật CCCD thành công!");
-                    } else {
-                        System.out.println("CCCD không hợp lệ.");
-                    }
+
+                case 4: // Cập nhật CCCD
+                    String cccd;
+                    do {
+                        System.out.print("Nhập CCCD mới: ");
+                        cccd = scanner.nextLine();
+                        if (kt.checkCCCD(cccd) && !checkTrungCCCD(cccd)) {
+                            tk.setCCCD(cccd);
+                            System.out.println("Cập nhật CCCD thành công!");
+                            break;
+                        } else {
+                            System.out.println("CCCD không hợp lệ hoặc đã tồn tại. Vui lòng nhập lại.");
+                        }
+                    } while (true);
                     break;
+
                 case 0:
                     System.out.println("Thoát không cập nhật!");
                     break;
+
                 default:
                     System.out.println("Lựa chọn không hợp lệ!");
             }
@@ -96,6 +174,7 @@ public class LISTTKKH {
 
     // Hàm xóa tài khoản
     public static void xoaTKKH() {
+        System.out.println("-- XÓA TÀI KHOẢN --");
         Scanner scanner = new Scanner(System.in);
         System.out.print("Nhập mã tài khoản cần xóa: ");
         String maTK = scanner.nextLine();
@@ -111,13 +190,15 @@ public class LISTTKKH {
 
     // Hàm in danh sách tài khoản
     public static void inDanhSach() {
+        System.out.println("-- DÁNH SÁCH TÀI KHOẢN --");
         if (list.isEmpty()) {
             System.out.println("Danh sách tài khoản rỗng!");
             return;
         }
         System.out.println("Danh sách tài khoản:");
         for (TKKH tk : list) {
-            tk.inThongTin(); // In thông tin từng tài khoản
+            tk.inThongTin();
+            System.out.println("-----------------------");// In thông tin từng tài khoản
         }
     }
 
@@ -148,6 +229,8 @@ public class LISTTKKH {
             System.out.println("4. In danh sách tài khoản");
             System.out.println("5. Kiểm tra danh sách rỗng");
             System.out.println("6. Tìm tài khoản");
+            System.out.println("7. Đọc file dữ liệu tài khoản");
+            System.out.println("8. Ghi file dữ liệu tài khoản");
             System.out.println("0. Thoát");
             System.out.print("Chọn chức năng: ");
             luaChon = scanner.nextInt();
@@ -183,6 +266,12 @@ public class LISTTKKH {
                     } else {
                         System.out.println("Không tìm thấy tài khoản.");
                     }
+                    break;
+                case 7:
+                    DocFile();
+                    break;
+                case 8:
+                    GhiFile();
                     break;
                 case 0:
                     System.out.println("Thoát khỏi quản lý tài khoản!");
@@ -264,6 +353,33 @@ public class LISTTKKH {
             }
         } else {
             System.out.println("Mã tài khoản không tồn tại.");
+        }
+    }
+        public static void GhiFile() {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FileName))) {
+                for (TKKH tk : list) {
+                    writer.write(tk.toString());
+                    writer.newLine(); // Thêm dòng mới giữa các bản ghi
+                }
+                System.out.println("Ghi thông tin thành công vào file: " + FileName);
+            } catch (IOException e) {
+                System.out.println("Lỗi khi ghi vào file: " + e.getMessage());
+            }
+         }
+
+        public static void DocFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length == 6) {
+                    TKKH tk = new TKKH(data[0], data[1], data[2], data[3], data[4], Integer.parseInt(data[5]));
+                    list.add(tk);
+                }
+            }
+            System.out.println("Đọc thông tin thành công từ file: " + FileName);
+        } catch (IOException e) {
+            System.out.println("Lỗi khi đọc từ file: " + e.getMessage());
         }
     }
 

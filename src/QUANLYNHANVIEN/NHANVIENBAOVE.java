@@ -1,5 +1,6 @@
 package QUANLYNHANVIEN;
 
+import java.util.Date;
 import java.util.Scanner;
 
 public class NHANVIENBAOVE extends NHANVIEN {
@@ -9,6 +10,16 @@ public class NHANVIENBAOVE extends NHANVIEN {
     // Phương thức khởi tạo (constructor)
     public NHANVIENBAOVE() {
         super(); // Gọi constructor của lớp cha NHANVIEN
+    }
+    public NHANVIENBAOVE(String maNhanVien, String hoTen, Date ngaySinh, String CCCD,
+                         String gioiTinh, String email, String chucVu, double mucLuong,
+                         double phuCap, String trinhDo, int kinhNghiem,
+                         String khuVucPhuTrach, String gioLamViec) {
+        // Gọi phương thức khởi tạo của lớp cha
+        super(maNhanVien, hoTen, ngaySinh, CCCD, gioiTinh, email, chucVu, mucLuong,
+                phuCap, trinhDo, kinhNghiem);
+        this.khuVucPhuTrach = khuVucPhuTrach;
+        this.gioLamViec = gioLamViec;
     }
 
     // Phương thức nhập thông tin bảo vệ
@@ -30,17 +41,18 @@ public class NHANVIENBAOVE extends NHANVIEN {
     @Override
     public void hienThiThongTin() {
         super.hienThiThongTin(); // Gọi phương thức hiển thị thông tin của lớp cha
-        System.out.println("Khu vực phụ trách: " + khuVucPhuTrach);
-        System.out.println("Giờ làm việc: " + gioLamViec);
+        System.out.printf("%-15s: %s%n", "Khu vực phụ trách", khuVucPhuTrach);
+        System.out.printf("%-15s: %s%n", "Giờ làm việc", gioLamViec);
     }
 
     // Phương thức toString
-    @Override
-    public String toString() {
-        return super.toString()  +
-                "Khu vực phụ trách: " + khuVucPhuTrach + "\n" +
-                "Giờ làm việc: " + gioLamViec;
-    }
+
+
+        @Override
+        public String toString() {
+            return super.toString() + "," + khuVucPhuTrach + "," + gioLamViec;
+        }
+
 
     // Phương thức tính lương (nếu có bất kỳ logic tính toán nào khác cho lương bảo vệ)
     @Override

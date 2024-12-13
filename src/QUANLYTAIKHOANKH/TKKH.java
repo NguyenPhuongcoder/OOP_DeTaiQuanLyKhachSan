@@ -5,6 +5,7 @@ import QUANLYPHONG.PHONG;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -17,15 +18,19 @@ public class TKKH {
     private String CCCD;
     public int soDu;
     public ArrayList<PHONG> danhSachPhongThue = new ArrayList<>();
+    List<String> danhSachMaTK = new ArrayList<>();
+    List<String> danhSachCCCD = new ArrayList<>();
+    List<String> danhSachSDT = new ArrayList<>();
 
     public TKKH() {
     }
-    public TKKH(String maTK, String tenDangNhap, String maTkhau, String soDienThoai, String CCCD) {
+    public TKKH(String maTK, String tenDangNhap, String maTkhau, String soDienThoai, String cccd, int soDu) {
         MaTK = maTK;
         this.tenDangNhap = tenDangNhap;
         this.maTkhau = maTkhau;
         SoDienThoai = soDienThoai;
-        this.CCCD = CCCD;
+        CCCD = cccd;
+        this.soDu = soDu;
     }
     public String getMaTK() {
         return this.MaTK;
@@ -67,21 +72,27 @@ public class TKKH {
         this.tenDangNhap = tenDangNhap;
     }
 
-    public void nhapThongTin() {
+    public boolean nhapThongTin() {
         Scanner scanner = new Scanner(System.in);
         KIEMTRA kt = new KIEMTRA();
+
         // Nhập mã tài khoản
         for (int i = 0; i < 3; i++) {
             System.out.print("Nhập mã tài khoản: ");
             this.MaTK = scanner.nextLine();
-            if (!this.MaTK.isEmpty()) { // Kiểm tra xem có nhập hay không
-                break;
+            if (!this.MaTK.isEmpty()) {
+                if (danhSachMaTK.contains(this.MaTK)) {
+                    System.out.println("Mã tài khoản đã tồn tại! Vui lòng nhập lại.");
+                } else {
+                    danhSachMaTK.add(this.MaTK); // Thêm vào danh sách
+                    break; // Mã tài khoản hợp lệ
+                }
             } else {
                 System.out.println("Mã tài khoản không được để trống!");
             }
             if (i == 2) {
                 System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi hàm.");
-                return;
+                return false; // Trả về false khi nhập sai quá 3 lần
             }
         }
 
@@ -90,13 +101,13 @@ public class TKKH {
             System.out.print("Nhập tên đăng nhập: ");
             this.tenDangNhap = scanner.nextLine();
             if (kt.checkTenTK(this.tenDangNhap)) {
-                break;
+                break; // Tên đăng nhập hợp lệ
             } else {
                 System.out.println("Tên đăng nhập không hợp lệ! (Không chứa số và ký tự đặc biệt)");
             }
             if (i == 2) {
                 System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi hàm.");
-                return;
+                return false; // Trả về false khi nhập sai quá 3 lần
             }
         }
 
@@ -105,13 +116,13 @@ public class TKKH {
             System.out.print("Nhập mật khẩu: ");
             this.maTkhau = scanner.nextLine();
             if (kt.kiemTraDoManhMatKhau(this.maTkhau)) {
-                break;
+                break; // Mật khẩu hợp lệ
             } else {
                 System.out.println("Mật khẩu không hợp lệ! (Cần ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt)");
             }
             if (i == 2) {
                 System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi hàm.");
-                return;
+                return false; // Trả về false khi nhập sai quá 3 lần
             }
         }
 
@@ -120,30 +131,52 @@ public class TKKH {
             System.out.print("Nhập số điện thoại: ");
             this.SoDienThoai = scanner.nextLine();
             if (kt.checkSdt(this.SoDienThoai)) {
-                break;
+                if (danhSachSDT.contains(this.SoDienThoai)) {
+                    System.out.println("Số điện thoại đã tồn tại! Vui lòng nhập lại.");
+                } else {
+                    danhSachSDT.add(this.SoDienThoai); // Thêm vào danh sách
+                    break; // Số điện thoại hợp lệ
+                }
             } else {
                 System.out.println("Số điện thoại không hợp lệ! (Cần 10 hoặc 11 chữ số)");
             }
             if (i == 2) {
                 System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi hàm.");
-                return;
+                return false; // Trả về false khi nhập sai quá 3 lần
             }
         }
-        soDu = 0;
-        // Nhập số CCCD
         for (int i = 0; i < 3; i++) {
             System.out.print("Nhập số CCCD: ");
             this.CCCD = scanner.nextLine();
             if (kt.checkCCCD(this.CCCD)) {
-                break;
+                if (danhSachCCCD.contains(this.CCCD)) {
+                    System.out.println("Số CCCD đã tồn tại! Vui lòng nhập lại.");
+                } else {
+                    danhSachCCCD.add(this.CCCD); // Thêm vào danh sách
+                    break; // CCCD hợp lệ
+                }
             } else {
                 System.out.println("Số CCCD không hợp lệ! (Cần 12 chữ số)");
             }
             if (i == 2) {
                 System.out.println("Bạn đã nhập sai 3 lần. Thoát khỏi hàm.");
-                return;
+                return false; // Trả về false khi nhập sai quá 3 lần
             }
         }
+        // Nhập số dư
+        while (true) {
+            System.out.print("Nhập số dư (phải lớn hơn 0): ");
+            soDu = scanner.nextInt();
+            if (soDu > 0) {
+                break; // Số dư hợp lệ
+            } else {
+                System.out.println("Số dư phải lớn hơn 0! Vui lòng nhập lại.");
+            }
+        }
+        // Nhập số CCCD
+
+
+        return true; // Trả về true nếu tất cả thông tin hợp lệ
     }
 
 
@@ -205,7 +238,11 @@ public class TKKH {
     public void xoaPhong(String maPhong) {
         danhSachPhongThue.removeIf(phong -> phong.getMaPhong().equals(maPhong));
         }
+    @Override
+    public String toString() {
+        return MaTK + "," + tenDangNhap + "," + maTkhau + "," + SoDienThoai + "," + CCCD + "," + soDu;
     }
+}
 
 
 
