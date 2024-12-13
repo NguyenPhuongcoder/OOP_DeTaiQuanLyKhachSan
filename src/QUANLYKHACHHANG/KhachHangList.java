@@ -1,5 +1,6 @@
 package QUANLYKHACHHANG;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -172,6 +173,43 @@ public class KhachHangList implements QuanLyKhachHang {
             for (KhachHang kh : dsKhachHang) {
                 kh.Xuat(); // Hiển thị thông tin tất cả các khách hàng
             }
+        }
+    }
+
+    // Phương thức ghi dữ liệu khách hàng vào file
+    public void ghiFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("KhachHang.txt"))) {
+            for (KhachHang kh : dsKhachHang) {
+                writer.write(kh.maKH + "," + kh.tenKH + "," + kh.maPhong + "," + kh.tenPhong + ","
+                        + kh.CCCD + "," + kh.SDT + "," + kh.diaChi + "," + kh.email);
+                writer.newLine();
+            }
+            System.out.println("Ghi file thành công.");
+        } catch (IOException e) {
+            System.err.println("Lỗi ghi file: " + e.getMessage());
+        }
+    }
+
+    // Phương thức đọc dữ liệu khách hàng từ file
+    public void docFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("KhachHang.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                KhachHang kh = new KhachHang();
+                kh.maKH = parts[0];
+                kh.tenKH = parts[1];
+                kh.maPhong = parts[2];
+                kh.tenPhong = parts[3];
+                kh.CCCD = parts[4];
+                kh.SDT = parts[5];
+                kh.diaChi = parts[6];
+                kh.email = parts[7];
+                dsKhachHang.add(kh);
+            }
+            System.out.println("Đọc file thành công.");
+        } catch (IOException e) {
+            System.err.println("Lỗi đọc file: " + e.getMessage());
         }
     }
 }

@@ -1040,13 +1040,13 @@ public  class THAOTAC {
             scanner.nextLine(); // Đọc dòng trống
 
             // Kiểm tra nếu người dùng chọn mục thoát
-            if (choice == 8) {
+            if (choice == 10) {
                 System.out.println("Thoát khỏi quản lý khách hàng!");
                 break;
             }
 
             // Xử lý lựa chọn của người dùng
-            while (choice < 1 || choice > 8) {  // Kiểm tra nếu lựa chọn không hợp lệ
+            while (choice < 1 || choice > 10) {  // Kiểm tra nếu lựa chọn không hợp lệ
                 System.out.println("Lựa chọn không hợp lệ! Vui lòng chọn lại.");
                 showMenu();  // Hiển thị lại menu
                 choice = scanner.nextInt();  // Nhập lại lựa chọn
@@ -1065,8 +1065,10 @@ public  class THAOTAC {
         System.out.println("5. Tính số ngày thuê của khách hàng");
         System.out.println("6. tim kiếm khách hàng theo tên");
         System.out.println("7. hiện thị danh sách khách hàng theo phòng");
-        System.out.println("8. Thoát");
-        System.out.print("Chọn chức năng (1-8): ");
+        System.out.println("8. Doc File");
+        System.out.println("9. GhiFile");
+        System.out.println("10. Thoát");
+        System.out.print("Chọn chức năng (1-10): ");
     }
 
     public static void handleChoice(int choice, KhachHangList khachHangList, Scanner scanner) {
@@ -1078,6 +1080,8 @@ public  class THAOTAC {
             case 5 -> tinhSoNgayThue(khachHangList, scanner);
             case 6 -> timKiemKhachHangTheoTen(khachHangList, scanner);
             case 7 -> HienthiDSKHTheoPhong(khachHangList,scanner);
+            case 8 -> khachHangList.docFile();
+            case 9 -> khachHangList.ghiFile();
             default -> System.out.println("Lựa chọn không hợp lệ! Vui lòng chọn lại.");
         }
     }

@@ -234,7 +234,6 @@ public class LISTNHANVIEN implements IFILENHANVIEN {
             while ((line = reader.readLine()) != null) {
                 String[] thongTin = line.split(",");
                 NHANVIEN nv = new NHANVIEN();
-
                 nv.setMaNhanVien(thongTin[0]);
                 nv.setHoTen(thongTin[1]);
                 nv.setNgaySinh(new SimpleDateFormat("dd/MM/yyyy").parse(thongTin[2]));
