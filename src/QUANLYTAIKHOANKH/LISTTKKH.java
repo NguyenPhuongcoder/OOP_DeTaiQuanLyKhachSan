@@ -285,15 +285,25 @@ public class LISTTKKH implements IFLIE {
     public void dangKyTaiKhoan() {
         TKKH tk = new TKKH(); // Khởi tạo đối tượng TKKH mới
         System.out.println("Nhập thông tin tài khoản mới:");
-        tk.nhapThongTin(); // Nhập thông tin tài khoản
+        tk.nhapThongTin2(); // Nhập thông tin tài khoản
 
         // Kiểm tra xem tài khoản đã tồn tại chưa
         if (timTaiKhoan(tk.getMaTK()) != null) {
             System.out.println("Tài khoản đã tồn tại! Vui lòng chọn mã tài khoản khác.");
-        } else {
+            return;
+        }
+        if(checkTrungCCCD(tk.getCCCD())==true)
+        {
+            System.out.println("CCCD đã tồn tại!");
+            return;
+        }
+        if(checkTrungSDT(tk.getSoDienThoai())==true)
+        {
+            System.out.println("SĐT đã tồn tại!");
+            return;
+        }
             list.add(tk); // Thêm tài khoản vào danh sách
             System.out.println("Đăng ký tài khoản thành công!");
-        }
     }
     // Hàm quên mật khẩu
     public void quenMatKhau() {

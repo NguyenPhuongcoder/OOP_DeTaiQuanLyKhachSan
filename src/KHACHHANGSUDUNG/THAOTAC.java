@@ -132,7 +132,9 @@ public  class THAOTAC {
             System.out.println("7. Đánh giá khách sạn");
             System.out.println("8. Xem thông tin tài khoản");
             System.out.println("9. Chỉnh sửa thông tin tài khoản");
-            System.out.println("10. Đổi mật khẩu");
+            System.out.println("10.Đổi mật khẩu");
+            System.out.println("11.Rút tiền");
+            System.out.println("12.Xem lịch sử giao dịch");
             System.out.println("0. Đăng xuất");
             System.out.print("Chọn chức năng: ");
             luaChonKH = scanner.nextInt();
@@ -168,6 +170,12 @@ public  class THAOTAC {
                     break;
                 case 10:
                     DoiMatKhau(tk);
+                    break;
+                case 11:
+                    tk.rutTien();
+                    break;
+                case 12:
+                    tk.hienThiLichSuGiaoDich();
                     break;
                 case 0:
                     System.out.println("Đăng xuất thành công.");
@@ -304,10 +312,10 @@ public  class THAOTAC {
 
         while (true) {
             choice = sc.nextInt();
-            if (choice >= 1 && choice <= 3) {
+            if (choice >= 1 && choice <= 4) {
                 break;
             } else {
-                System.out.println("Vui lòng nhập số từ " + 1 + " đến " + 6);
+                System.out.println("Vui lòng nhập số từ " + 1 + " đến " + 4);
             }
         }
         sc.nextLine();
@@ -514,7 +522,7 @@ public  class THAOTAC {
             String maPhong = scanner.nextLine();
 
             // Kiểm tra xem phòng đã đặt hay chưa
-            if (tk.timPhongDaDat(maPhong) != null) {
+            if (tk.timPhongDaDat(maPhong) != null &&  danhSachPhong.timPhong(maPhong).isTinhTrangPhong().equals("Đang thuê")) {
                 LocalDateTime ngayHuy = null;
                 boolean validDate = false;
 
@@ -548,8 +556,8 @@ public  class THAOTAC {
 
                     if (question.equalsIgnoreCase("CÓ")) {
                         // Kiểm tra số dư trước khi trừ
-                        if (tk.soDu >= 1000000) {
-                            tk.soDu -= 1000000; // Trừ phí tổn thất từ số dư
+                        if (tk.soDu >= 1000) {
+                            tk.soDu -= 1000; // Trừ phí tổn thất từ số dư
                             System.out.println("Hủy đặt phòng thành công.");
                             System.out.println("Số dư hiện tại của bạn là: " + tk.soDu + " VNĐ.");
                             tk.xoaPhong(maPhong);
@@ -564,7 +572,10 @@ public  class THAOTAC {
                     }
                 }
             } else {
-                System.out.println("Không tìm thấy phòng trên!");
+                if (danhSachPhong.timPhong(maPhong) == null)
+                    System.out.println("Không tìm thấy phòng trên !");
+                if(!danhSachPhong.timPhong(maPhong).isTinhTrangPhong().equals("Đang thuê"))
+                    System.out.println("Phòng này không sử dụng !");
             }
         }
 
@@ -678,6 +689,11 @@ public  class THAOTAC {
                     System.out.print("Nhập ngày thanh toán (yyyy-MM-dd HH:mm): ");
                     String ngayThanhToanStr = scanner.nextLine();
                     ngayThanhToan = LocalDateTime.parse(ngayThanhToanStr, formatter);
+                    if(ngayThanhToan.isBefore(danhSachPhong.timPhong(maPhong).getNgayNhanPhong()))
+                    {
+                        System.out.println("Ngày thanh toán phải trước ngày nhận phòng, nếu bạn muốn hủy thì qua chức năng hủy phòng giúp chúng tôi");
+                        continue;
+                    }
                     validDate = true; // Ngày hợp lệ
                 } catch (DateTimeParseException e) {
                     System.out.println("Ngày thanh toán không hợp lệ! Vui lòng nhập lại.");
@@ -1203,7 +1219,7 @@ public  class THAOTAC {
 
         do {
             System.out.println("----- MENU QUẢN LÝ PHÒNG -----");
-            System.out.println("1. Thêm danh sách phòng");
+            System.out.println("1. Thêm phòng vào khách sạn");
             System.out.println("2. Đọc danh sách phòng từ file");
             System.out.println("3. Ghi danh sách phòng vào file");
             System.out.println("4. In danh sách phòng");
@@ -1244,7 +1260,6 @@ public  class THAOTAC {
                     danhSachPhong.in();
                     break;
                 case 5:
-                    System.out.print("Nhập mã phòng để tìm: ");
                     danhSachPhong.tim();
                     break;
                 case 6:
@@ -1419,7 +1434,7 @@ public  class THAOTAC {
         }
 
     }
-    private static void huyPhongTaiQuay() {
+    static public void huyPhongTaiQuay() {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         System.out.println("-- HỦY PHÒNG --");
@@ -1457,13 +1472,16 @@ public  class THAOTAC {
                 String question = scanner.nextLine();
 
                 if (question.equalsIgnoreCase("CÓ")) {
-                    System.out.println("Xin mới bạn đọc tiền !");
+                    danhSachPhong.timPhong(maPhong).setTinhTrangPhong("Trống");
+                    danhSachPhong.timPhong(maPhong).setNgayNhanPhong(null);
+                    danhSachPhong.timPhong(maPhong).setNgayTraPhongDuKien(null);
+                    System.out.println("Xin mời bạn nộp tiền !");
                 } else {
                     System.out.println("Bạn đã chọn không hủy hòng.");
                 }
             }
         } else {
-            if (danhSachPhong.timPhong(maPhong)    == null)
+            if (danhSachPhong.timPhong(maPhong)   == null)
                  System.out.println("Không tìm thấy phòng trên!");
             if (!danhSachPhong.timPhong(maPhong).isTinhTrangPhong().equals("Đang thuê"))
                 System.out.println("Hiện tại phòng này không sử dụng, không cần phải hủy!");
@@ -1475,7 +1493,7 @@ public  class THAOTAC {
         System.out.print("Nhập mã phòng cần thanh toán: ");
         String maPhong = scanner.nextLine();
 
-        if (danhSachPhong.timPhong(maPhong) != null) {
+        if (danhSachPhong.timPhong(maPhong) != null&&danhSachPhong.timPhong(maPhong).isTinhTrangPhong().equals("Đang thuê")) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime ngayThanhToan = null;
             boolean validDate = false;
@@ -1486,6 +1504,11 @@ public  class THAOTAC {
                     System.out.print("Nhập ngày thanh toán (yyyy-MM-dd HH:mm): ");
                     String ngayThanhToanStr = scanner.nextLine();
                     ngayThanhToan = LocalDateTime.parse(ngayThanhToanStr, formatter);
+                    if(ngayThanhToan.isBefore(danhSachPhong.timPhong(maPhong).getNgayNhanPhong()))
+                    {
+                        System.out.println("Ngày thanh toán phải trước ngày nhận phòng, nếu bạn muốn hủy thì qua chức năng hủy phòng giúp chúng tôi");
+                        continue;
+                    }
                     validDate = true; // Ngày hợp lệ
                 } catch (DateTimeParseException e) {
                     System.out.println("Ngày thanh toán không hợp lệ! Vui lòng nhập lại.");
@@ -1669,8 +1692,8 @@ public  class THAOTAC {
                             break; // Thoát vòng lặp nếu thanh toán thành công
                         } else if (choice == 2) {
                             System.out.println("Bạn đã hủy thao tác thanh toán!");
-                            validChoice = true; // Đánh dấu hợp lệ trong trường hợp hủy
-                            break; // Thoát vòng lặp nếu hủy
+                            validChoice = true;
+                            break;
                         } else {
                             System.out.println("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
                         }
@@ -1680,19 +1703,17 @@ public  class THAOTAC {
                             System.out.println("Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau.");
                         }
                     }
-
-// Xử lý cho trường hợp khi người dùng không thực hiện thành công thanh toán hoặc hủy thao tác
                     if (!validChoice) {
                         System.out.println("Thanh toán không thành công. Vui lòng thử lại!");
                     }
                 }
-
             }
         } else {
-            System.out.println("Không tìm thấy phòng trên!");
+            if (danhSachPhong.timPhong(maPhong) == null)
+                System.out.println("Không tìm thấy phòng trên !");
+            if(!danhSachPhong.timPhong(maPhong).isTinhTrangPhong().equals("Đang thuê"))
+            System.out.println("Phòng này không sử dụng !");
         }
     }
-
-
 
 }

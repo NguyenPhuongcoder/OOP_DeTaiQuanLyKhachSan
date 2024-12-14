@@ -1,5 +1,5 @@
-1,Nguyen Phuong,1130000400000,123123123123,Nam,phuong@gmail.com,Bảo vệ,3000.0,200.0,tiểu học,2,Hồ bơi,2
-2,Đạt,799606800000,123123123122,Nữ,dat@gmail.co,Lễ tân,5000.0,500.0,Đại học,3,3,Làm xiếc
-3,Nguyễn Phương 2,1066842000000,123123123124,Nam,phuong2@gmail.com,Quản lý,10000.0,1000.0,Cao học,3,5,Quản lý nhân viên
-4,Võ Văn Trạng,981910800000,123123123111,Nữ,trang@gmail.com,Vệ sinh,3400.0,200.0,tiểu học,3,Nhà bếp,chổi,4
-5,Hồ Hữu huy,1092243600000,123123123121,Nam,huy2@gmail.com,Lễ tân,5500.0,200.0,Đại học,2,4,Nói chuyện dẻo
+3,Nguyen Phuong,1130000400000,123123123123,Nam,phuong@gmail.com,Bảo vệ,3000.0,200.0,tiểu học,2,Hồ bơi,2
+4,Đạt,799606800000,123123123122,Nữ,dat@gmail.co,Lễ tân,5000.0,500.0,Đại học,3,3,Làm xiếc
+5,Nguyễn Phương 2,1066842000000,123123123124,Nam,phuong2@gmail.com,Quản lý,10000.0,1000.0,Cao học,3,5,Quản lý nhân viên
+6,Võ Văn Trạng,981910800000,123123123111,Nữ,trang@gmail.com,Vệ sinh,3400.0,200.0,tiểu học,3,Nhà bếp,chổi,4
+7,Hồ Hữu huy,1092243600000,123123123121,Nam,huy2@gmail.com,Lễ tân,5500.0,200.0,Đại học,2,4,Nói chuyện dẻo
